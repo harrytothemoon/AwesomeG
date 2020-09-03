@@ -2,6 +2,9 @@ const express = require('express')
 const router = express.Router()
 const passport = require('../config/passport')
 
+const multer = require('multer')
+const upload = multer({ dest: 'temp/' })
+
 const adminController = require('../controllers/adminController.js')
 const answerController = require('../controllers/answerController.js')
 const categoryController = require('../controllers/categoryController.js')
@@ -42,11 +45,11 @@ router.get('/admin/users', authenticated, authenticatedAdmin, adminController.ge
 
 router.get('/teacher/questions', authenticated, questionController.getQuestions)
 router.get('/teacher/answers', authenticated, answerController.getAnswer)
-router.put('/teacher/answer', authenticated, answerController.putAnswer)
 router.post('/teacher/answer', authenticated, answerController.postAnswer)
+router.put('/teacher/answer', authenticated, upload.single('image'), answerController.putAnswer)
 
 
 router.get('/student/questions', authenticated, questionController.getMyQuestions)
-router.post('/student/questions', authenticated, questionController.postQuestion)
+router.post('/student/questions', authenticated, upload.single('image'), questionController.postQuestion)
 
 module.exports = router

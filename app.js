@@ -16,7 +16,6 @@ app.use(bodyParser.json())
 app.use(passport.initialize())
 app.use(passport.session())
 app.use(methodOverride('_method'))
-app.use('/upload', express.static(__dirname + '/upload'))
 
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`)

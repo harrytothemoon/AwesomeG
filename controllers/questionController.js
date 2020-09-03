@@ -1,6 +1,9 @@
 const db = require('../models')
 const { Question, Status, Subject, Scope, Answer } = db
 
+const imgur = require('imgur-node-api')
+const IMGUR_CLIENT_ID = process.env.IMGUR_CLIENT_ID
+
 const questionController = {
   getQuestions: (req, res) => {
     Question.findAll(({ include: [Subject, Scope] })).then(questions => {
@@ -29,16 +32,34 @@ const questionController = {
     })
   },
   postQuestion: (req, res) => {
-    return Question.create({
-      SubjectId: req.body.subjectId,
-      ScopeId: req.body.scopeId,
-      UserId: req.user.id,
-      image: 'test image',
-      description: req.body.description,
-      StatusId: 1,
-    }).then((question) => {
-      return res.json({ status: 'success', message: '成功提問！' })
-    })
+    const { file } = req
+    if (file) {
+      imgur.setClientID(IMGUR_CLIENT_ID);
+      imgur.upload(file.path, (err, img) => {
+        return Question.create({
+          SubjectId: req.body.subjectId,
+          ScopeId: req.body.scopeId,
+          UserId: req.user.id,
+          description: req.body.description,
+          StatusId: 1,
+          image: img.data.link,
+        }).then((question) => {
+          res.json({ status: 'success', message: '成功提問！' })
+        })
+      })
+    }
+    else {
+      return Question.create({
+        SubjectId: req.body.subjectId,
+        ScopeId: req.body.scopeId,
+        UserId: req.user.id,
+        description: req.body.description,
+        image: null,
+        StatusId: 1,
+      }).then((question) => {
+        res.json({ status: 'success', message: '成功提問！' })
+      })
+    }
   },
 }
 module.exports = questionController
