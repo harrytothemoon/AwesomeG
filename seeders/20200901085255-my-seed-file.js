@@ -50,12 +50,22 @@ module.exports = {
             updatedAt: new Date()
           })
         ), {})
+    await queryInterface.bulkInsert('Statuses',
+      ['wait', 'work', 'done', 'complete']
+        .map((item, index) =>
+          ({
+            id: index + 1,
+            name: item,
+            createdAt: new Date(),
+            updatedAt: new Date()
+          })
+        ), {})
     await queryInterface.bulkInsert('Questions',
       Array.from({ length: 5 }).map(d =>
         ({
           description: faker.lorem.text(),
           image: `https://loremflickr.com/320/240/question/?lock=${Math.random() * 100}`,
-          status: "wait",
+          StatusId: 2,
           UserId: 2,
           SubjectId: 2,
           ScopeId: 2,

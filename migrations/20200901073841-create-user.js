@@ -35,6 +35,9 @@ module.exports = {
       grade: {
         type: Sequelize.STRING
       },
+      bankaccount: {
+        type: Sequelize.INTEGER
+      },
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE
