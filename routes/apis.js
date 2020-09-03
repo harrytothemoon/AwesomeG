@@ -39,7 +39,9 @@ router.post('/signin', userController.signIn)
 router.post('/signup', userController.signUp)
 router.get('/admin', (req, res) => res.redirect('/api/admin/users'))
 router.get('/admin/users', authenticated, authenticatedAdmin, adminController.getUsers)
-router.get('/teacher/questions', authenticated, authenticatedTeacher, questionController.getQuestions)
-router.get('/student/questions', authenticated, authenticatedStudent, questionController.getMyQuestions)
+router.get('/teacher/questions', questionController.getQuestions)
+
+router.get('/student/questions', questionController.getMyQuestions)
+router.post('/student/questions', questionController.postQuestion)
 
 module.exports = router

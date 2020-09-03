@@ -15,6 +15,7 @@ module.exports = (sequelize, DataTypes) => {
       Question.belongsTo(models.Subject)
       Question.belongsTo(models.Scope)
       Question.belongsTo(models.User)
+      Question.belongsTo(models.Answer)
     }
   };
   Question.init({
@@ -24,6 +25,7 @@ module.exports = (sequelize, DataTypes) => {
     SubjectId: DataTypes.INTEGER,
     ScopeId: DataTypes.INTEGER,
     StatusId: DataTypes.INTEGER,
+    AnswerId: DataTypes.INTEGER,
   }, {
     sequelize,
     modelName: 'Question',
