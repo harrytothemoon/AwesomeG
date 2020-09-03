@@ -20,7 +20,7 @@ const authenticatedAdmin = (req, res, next) => {
 }
 const authenticatedStudent = (req, res, next) => {
   if (req.user) {
-    if (req.user.role === 'student') { return next() }
+    if (req.user.role === 'student' || req.user.role === 'admin') { return next() }
     return res.json({ status: 'error', message: "your account is not a student's account!" })
   } else {
     return res.json({ status: 'error', message: 'permission denied!' })
@@ -28,7 +28,7 @@ const authenticatedStudent = (req, res, next) => {
 }
 const authenticatedTeacher = (req, res, next) => {
   if (req.user) {
-    if (req.user.role === 'teacher') { return next() }
+    if (req.user.role === 'teacher' || req.user.role === 'admin') { return next() }
     return res.json({ status: 'error', message: "your account is not a teacher's account!" })
   } else {
     return res.json({ status: 'error', message: 'permission denied' })
@@ -39,9 +39,14 @@ router.post('/signin', userController.signIn)
 router.post('/signup', userController.signUp)
 router.get('/admin', (req, res) => res.redirect('/api/admin/users'))
 router.get('/admin/users', authenticated, authenticatedAdmin, adminController.getUsers)
-router.get('/teacher/questions', questionController.getQuestions)
 
-router.get('/student/questions', questionController.getMyQuestions)
-router.post('/student/questions', questionController.postQuestion)
+router.get('/teacher/questions', authenticated, questionController.getQuestions)
+router.get('/teacher/answers', authenticated, answerController.getAnswer)
+router.put('/teacher/answer', authenticated, answerController.putAnswer)
+router.post('/teacher/answer', authenticated, answerController.postAnswer)
+
+
+router.get('/student/questions', authenticated, questionController.getMyQuestions)
+router.post('/student/questions', authenticated, questionController.postQuestion)
 
 module.exports = router

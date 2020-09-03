@@ -1,5 +1,5 @@
 const db = require('../models')
-const { User, Question, Status, Subject, Scope, Answer } = db
+const { Question, Status, Subject, Scope, Answer } = db
 
 const questionController = {
   getQuestions: (req, res) => {
@@ -22,7 +22,7 @@ const questionController = {
     })
   },
   getMyQuestions: (req, res) => {
-    Question.findAll(({ where: { UserId: 2 } }, { include: [Status, Answer] })).then(questions => {
+    Question.findAll(({ where: { UserId: req.user.id } }, { include: [Status, Answer] })).then(questions => {
       return res.json({
         questions,
       })
@@ -34,7 +34,8 @@ const questionController = {
       ScopeId: req.body.scopeId,
       UserId: req.user.id,
       image: 'test image',
-      description: 'test desc',
+      description: req.body.description,
+      StatusId: 1,
     }).then((question) => {
       return res.json({ status: 'success', message: '成功提問！' })
     })
