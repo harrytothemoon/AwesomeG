@@ -11,6 +11,8 @@ const subjectController = require('../controllers/subjectController.js')
 const scopeController = require('../controllers/scopeController.js')
 const questionController = require('../controllers/questionController.js')
 const userController = require('../controllers/userController.js')
+const productController = require('../controllers/productController.js')
+const orderController = require('../controllers/orderController.js')
 
 const authenticated = passport.authenticate('jwt', { session: false })
 
@@ -44,7 +46,7 @@ router.post('/signup', userController.signUp)
 router.get('/admin', (req, res) => res.redirect('/api/admin/users'))
 router.get('/admin/users', authenticated, authenticatedAdmin, adminController.getUsers)
 
-router.get('/admin/scopes', scopeController.getScopes)
+router.get('/scopes', scopeController.getScopes)
 router.get('/admin/scopes/:id', scopeController.getScopes)
 router.post('/admin/scopes', authenticated, authenticatedAdmin, scopeController.postScope)
 router.put('/admin/scopes/:id', authenticated, authenticatedAdmin, scopeController.putScope)
@@ -67,5 +69,13 @@ router.put('/teacher/answer', authenticated, upload.single('image'), answerContr
 
 router.get('/student/questions', authenticated, questionController.getMyQuestions)
 router.post('/student/questions', authenticated, upload.single('image'), questionController.postQuestion)
+
+router.get('/products', productController.getProducts)
+router.get('/admin/products/:id', productController.getProducts)
+router.post('/admin/products', authenticated, authenticatedAdmin, productController.postProduct)
+router.put('/admin/products/:id', authenticated, authenticatedAdmin, productController.putProduct)
+router.delete('/admin/products/:id', authenticated, authenticatedAdmin, productController.deleteProduct)
+
+router.post("/order", authenticated, orderController.postOrder);
 
 module.exports = router
