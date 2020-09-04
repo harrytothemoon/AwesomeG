@@ -1,7 +1,9 @@
 const bcrypt = require('bcryptjs')
 const db = require('../models')
-const User = db.User
+const { User, Answer, Question } = db
 const jwt = require('jsonwebtoken')
+const imgur = require('imgur-node-api')
+const IMGUR_CLIENT_ID = process.env.IMGUR_CLIENT_ID
 
 const userController = {
   signIn: (req, res) => {
@@ -26,7 +28,7 @@ const userController = {
         message: 'ok',
         token: token,
         user: {
-          id: user.id, name: user.name, email: user.email, isAdmin: user.isAdmin
+          id: user.id, name: user.name, email: user.email, role: user.role
         }
       })
     })
@@ -53,5 +55,63 @@ const userController = {
       })
     }
   },
+  getTeachers: (req, res) => {
+    User.findAll(({ where: { role: 'teacher' }, include: Answer })).then(teachers => {
+      return res.json({
+        teachers,
+      })
+    })
+  },
+  getUser: (req, res) => {
+    return User.findByPk(req.params.id, {
+      include: [{ model: Answer, include: [Question] }, Question]
+    }).then(user => {
+      res.json({ user })
+    })
+  },
+  putUser: (req, res) => {
+    console.log(req.params.id, '---', req.user.id)
+    if (Number(req.params.id) === req.user.id) {
+      const { file } = req
+      if (file) {
+        imgur.setClientID(IMGUR_CLIENT_ID);
+        imgur.upload(file.path, (err, img) => {
+          return User.findByPk(req.params.id)
+            .then((user) => {
+              user.update({
+                name: req.body.name ? req.body.name : user.name,
+                password: req.body.password ? bcrypt.hashSync(req.body.password, bcrypt.genSaltSync(10), null) : user.password,
+                avatar: img.data.link,
+                gender: req.body.gender ? req.body.gender : user.gender,
+                introduction: req.body.introduction ? req.body.introduction : user.introduction,
+                bankaccount: req.body.bankaccount ? req.body.bankaccount : user.bankaccount,
+                grade: req.body.grade ? req.body.grade : user.grade
+              })
+                .then((user) => {
+                  res.json({ status: 'success', message: "資訊成功修改!" })
+                })
+            })
+        })
+      }
+      else
+        return User.findByPk(req.params.id)
+          .then((user) => {
+            user.update({
+              name: req.body.name ? req.body.name : user.name,
+              password: req.body.password ? bcrypt.hashSync(req.body.password, bcrypt.genSaltSync(10), null) : user.password,
+              avatar: user.avatar,
+              gender: req.body.gender ? req.body.gender : user.gender,
+              introduction: req.body.introduction ? req.body.introduction : user.introduction,
+              bankaccount: req.body.introduction ? req.body.introduction : user.introduction,
+              grade: req.body.grade ? req.body.grade : user.grade
+            })
+              .then((user) => {
+                res.json({ status: 'success', message: "資訊成功修改!" })
+              })
+          })
+    } else {
+      res.json({ status: 'error', message: "沒有權限修改他人資訊！" })
+    }
+  }
 }
 module.exports = userController

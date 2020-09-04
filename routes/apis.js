@@ -43,6 +43,10 @@ router.post('/signup', userController.signUp)
 router.get('/admin', (req, res) => res.redirect('/api/admin/users'))
 router.get('/admin/users', authenticated, authenticatedAdmin, adminController.getUsers)
 
+router.get('/users/teachers', userController.getTeachers)
+router.get('/users/:id', authenticated, userController.getUser)
+router.put('/users/:id', authenticated, upload.single('avatar'), userController.putUser)
+
 router.get('/teacher/questions', authenticated, questionController.getQuestions)
 router.get('/teacher/answers', authenticated, answerController.getAnswer)
 router.post('/teacher/answer', authenticated, answerController.postAnswer)

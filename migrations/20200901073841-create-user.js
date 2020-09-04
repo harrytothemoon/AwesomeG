@@ -36,7 +36,7 @@ module.exports = {
         type: Sequelize.STRING
       },
       bankaccount: {
-        type: Sequelize.INTEGER
+        type: Sequelize.STRING
       },
       createdAt: {
         allowNull: false,

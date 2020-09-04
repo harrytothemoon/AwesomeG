@@ -1,5 +1,5 @@
 const db = require('../models')
-const { Question, Status, Subject, Scope, Answer } = db
+const { Question, Answer } = db
 
 const imgur = require('imgur-node-api')
 const IMGUR_CLIENT_ID = process.env.IMGUR_CLIENT_ID
