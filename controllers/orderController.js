@@ -15,6 +15,11 @@ const transporter = nodemailer.createTransport({
 });
 
 const productController = {
+  getOrders: (req, res) => {
+    Order.findAll({ where: { UserId: req.user.id }, include: Product }).then((orders) => {
+      return res.json({ orders });
+    });
+  },
   postOrder: (req, res) => {
     return Product.findByPk(req.body.productId).then(product => {
       return Order.create({

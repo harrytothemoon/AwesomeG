@@ -76,6 +76,7 @@ router.post('/admin/products', authenticated, authenticatedAdmin, productControl
 router.put('/admin/products/:id', authenticated, authenticatedAdmin, productController.putProduct)
 router.delete('/admin/products/:id', authenticated, authenticatedAdmin, productController.deleteProduct)
 
+router.get("/orders", authenticated, orderController.getOrders);
 router.post("/order", authenticated, orderController.postOrder);
 
 module.exports = router
