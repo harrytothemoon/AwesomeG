@@ -1,6 +1,6 @@
 const db = require('../models')
 const crypto = require("crypto");
-const { Order, Product, Payment } = db
+const { Order, Product, Payment, User } = db
 const nodemailer = require('nodemailer');
 
 //通知信
@@ -60,7 +60,6 @@ const orderController = {
 
   getPayment: (req, res) => {
     return Order.findByPk(req.params.id, { include: Product }).then((order) => {
-      console.log(order.toJSON())
       const tradeInfo = helpers.getTradeInfo(
         order.toJSON().amount,
         `AwesomeG-${order.toJSON().Product.name}`,
@@ -88,25 +87,30 @@ const orderController = {
   },
   spgatewayCallback: (req, res) => {
     const data = JSON.parse(helpers.create_mpg_aes_decrypt(req.body.TradeInfo));
-    console.log(data)
     return Order.findAll({
       where: { sn: data["Result"]["MerchantOrderNo"] },
+      include: Product
     }).then((orders) => {
       orders[0]
         .update({
           payment_status: 1,
-        })
-        .then(() => {
+        }).then(() => {
           if (req.query.from === 'NotifyURL') {
-            return Payment.create({
-              payment_status: orders[0].payment_status,
-              amount: data.Result.Amt,
-              OrderId: orders[0].id,
-              sn: orders[0].sn,
-              payment_method: data.Result.PaymentMethod,
-              paid_at: Date.now()
-            }).then(() => {
-              return res.json({ status: 'success', message: '成功付款!' })
+            return User.findByPk(orders[0].dataValues.UserId).then((user) => {
+              user.update({
+                quantity: user.quantity ? user.quantity + Number(orders[0].dataValues.Product.dataValues.description) : Number(orders[0].dataValues.Product.dataValues.description)
+              }).then(() => {
+                return Payment.create({
+                  payment_status: orders[0].payment_status,
+                  amount: data.Result.Amt,
+                  OrderId: orders[0].id,
+                  sn: orders[0].sn,
+                  payment_method: data.Result.PaymentMethod,
+                  paid_at: Date.now()
+                }).then(() => {
+                  return res.json({ status: 'success', message: '成功付款!' })
+                }).catch(error => console.log(error))
+              })
             }).catch(error => console.log(error))
           }
           return res.json({ status: 'success', message: '成功付款!' })
