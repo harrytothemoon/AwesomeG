@@ -51,7 +51,7 @@ router.get('/admin/scopes/:id', scopeController.getScopes)
 router.post('/admin/scopes', authenticated, authenticatedAdmin, scopeController.postScope)
 router.put('/admin/scopes/:id', authenticated, authenticatedAdmin, scopeController.putScope)
 router.delete('/admin/scopes/:id', authenticated, authenticatedAdmin, scopeController.deleteScope)
-router.get('/admin/subjects', subjectController.getSubjects)
+router.get('/subjects', subjectController.getSubjects)
 router.get('/admin/subjects/:id', subjectController.getSubjects)
 router.post('/admin/subjects', authenticated, authenticatedAdmin, subjectController.postSubject)
 router.put('/admin/subjects/:id', authenticated, authenticatedAdmin, subjectController.putSubject)
@@ -76,7 +76,10 @@ router.post('/admin/products', authenticated, authenticatedAdmin, productControl
 router.put('/admin/products/:id', authenticated, authenticatedAdmin, productController.putProduct)
 router.delete('/admin/products/:id', authenticated, authenticatedAdmin, productController.deleteProduct)
 
-router.get("/orders", authenticated, orderController.getOrders);
-router.post("/order", authenticated, orderController.postOrder);
+router.get("/student/orders", authenticated, orderController.getOrders);
+router.post("/student/order", authenticated, orderController.postOrder);
+
+router.get("/student/order/:id/payment", orderController.getPayment);
+router.post("/spgateway/callback", orderController.spgatewayCallback);
 
 module.exports = router

@@ -11,11 +11,11 @@ const productController = {
         Product.findByPk(req.params.id)
           .then((product) => {
             res.json({ products, product })
-          })
+          }).catch(error => console.log(error))
       } else {
         return res.json({ products })
       }
-    })
+    }).catch(error => console.log(error))
   },
   postProduct: (req, res) => {
     if (!req.body.name || !req.body.description || !req.body.price) {
@@ -28,7 +28,7 @@ const productController = {
       })
         .then((product) => {
           res.json({ status: 'success', message: '成功新增product!' })
-        })
+        }).catch(error => console.log(error))
     }
   },
   putProduct: (req, res) => {
@@ -40,8 +40,8 @@ const productController = {
           product.update(req.body)
             .then((product) => {
               res.json({ status: 'success', message: '成功修改product!' })
-            })
-        })
+            }).catch(error => console.log(error))
+        }).catch(error => console.log(error))
     }
   },
   deleteProduct: (req, res) => {
@@ -50,8 +50,8 @@ const productController = {
         product.destroy()
           .then((product) => {
             res.json({ status: 'success', message: '成功刪除product!' })
-          })
-      })
+          }).catch(error => console.log(error))
+      }).catch(error => console.log(error))
   }
 }
 module.exports = productController

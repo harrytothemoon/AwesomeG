@@ -31,7 +31,7 @@ const userController = {
           id: user.id, name: user.name, email: user.email, role: user.role
         }
       })
-    })
+    }).catch(error => console.log(error))
   },
   signUp: (req, res) => {
     // confirm password
@@ -50,24 +50,25 @@ const userController = {
             password: bcrypt.hashSync(req.body.password, bcrypt.genSaltSync(10), null)
           }).then(user => {
             return res.json({ status: 'success', message: '成功註冊帳號！' })
-          })
+          }).catch(error => console.log(error))
         }
-      })
+      }).catch(error => console.log(error))
     }
   },
   getTeachers: (req, res) => {
-    User.findAll(({ where: { role: 'teacher' }, include: Answer })).then(teachers => {
-      return res.json({
-        teachers,
-      })
-    })
+    User.findAll(({ where: { role: 'teacher' }, include: Answer }))
+      .then(teachers => {
+        return res.json({
+          teachers,
+        })
+      }).catch(error => console.log(error))
   },
   getUser: (req, res) => {
     return User.findByPk(req.params.id, {
       include: [{ model: Answer, include: [Question] }, Question]
     }).then(user => {
       res.json({ user })
-    })
+    }).catch(error => console.log(error))
   },
   putUser: (req, res) => {
     console.log(req.params.id, '---', req.user.id)
@@ -89,8 +90,8 @@ const userController = {
               })
                 .then((user) => {
                   res.json({ status: 'success', message: "資訊成功修改!" })
-                })
-            })
+                }).catch(error => console.log(error))
+            }).catch(error => console.log(error))
         })
       }
       else
@@ -107,8 +108,8 @@ const userController = {
             })
               .then((user) => {
                 res.json({ status: 'success', message: "資訊成功修改!" })
-              })
-          })
+              }).catch(error => console.log(error))
+          }).catch(error => console.log(error))
     } else {
       res.json({ status: 'error', message: "沒有權限修改他人資訊！" })
     }

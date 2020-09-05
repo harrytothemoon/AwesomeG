@@ -29,7 +29,7 @@ module.exports = {
       gender: {
         type: Sequelize.STRING
       },
-      liked: {
+      quantity: {
         type: Sequelize.INTEGER
       },
       grade: {

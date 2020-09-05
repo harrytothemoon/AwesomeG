@@ -20,16 +20,22 @@ const questionController = {
             subjects,
             scopes,
           })
-        })
-      })
+        }).catch(error => console.log(error))
+      }).catch(error => console.log(error))
     })
   },
   getMyQuestions: (req, res) => {
-    Question.findAll(({ where: { UserId: req.user.id } }, { include: [Status, Answer] })).then(questions => {
-      return res.json({
-        questions,
-      })
-    })
+    Question.findAll(({
+      where: { UserId: req.user.id },
+      include: [Status, Answer],
+      raw: true,
+      nest: true
+    }))
+      .then(questions => {
+        return res.json({
+          questions,
+        })
+      }).catch(error => console.log(error))
   },
   postQuestion: (req, res) => {
     const { file } = req
@@ -45,7 +51,7 @@ const questionController = {
           image: img.data.link,
         }).then((question) => {
           res.json({ status: 'success', message: '成功提問！' })
-        })
+        }).catch(error => console.log(error))
       })
     }
     else {
@@ -58,7 +64,7 @@ const questionController = {
         StatusId: 1,
       }).then((question) => {
         res.json({ status: 'success', message: '成功提問！' })
-      })
+      }).catch(error => console.log(error))
     }
   },
 }

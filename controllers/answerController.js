@@ -9,7 +9,7 @@ const answerController = {
     Answer.findAll(({ where: { UserId: req.user.id }, include: Question }))
       .then(answers => {
         return res.json({ answers })
-      })
+      }).catch(error => console.log(error))
   },
   postAnswer: (req, res) => {
     return Answer.create({
@@ -24,7 +24,7 @@ const answerController = {
         }).then(() => {
           return res.json({ status: 'success', message: '已獲取題目！' })
         })
-    })
+    }).catch(error => console.log(error))
   },
   putAnswer: (req, res) => {
     Answer.findOne({ where: { QuestionId: req.body.questionId } })
@@ -44,8 +44,8 @@ const answerController = {
                   })
                 }).then(() => {
                   return res.json({ status: 'success', message: '答案已送出！' })
-                })
-            })
+                }).catch(error => console.log(error))
+            }).catch(error => console.log(error))
           })
         }
         else {
@@ -60,10 +60,10 @@ const answerController = {
                 })
               }).then(() => {
                 return res.json({ status: 'success', message: '答案已送出！' })
-              })
-          })
+              }).catch(error => console.log(error))
+          }).catch(error => console.log(error))
         }
-      })
+      }).catch(error => console.log(error))
   }
 }
 module.exports = answerController

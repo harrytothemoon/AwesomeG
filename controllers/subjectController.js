@@ -11,11 +11,11 @@ const subjectController = {
         Subject.findByPk(req.params.id)
           .then((subject) => {
             res.json({ subjects, subject })
-          })
+          }).catch(error => console.log(error))
       } else {
         return res.json({ subjects })
       }
-    })
+    }).catch(error => console.log(error))
   },
   postSubject: (req, res) => {
     if (!req.body.name) {
@@ -26,7 +26,7 @@ const subjectController = {
       })
         .then((subject) => {
           res.json({ status: 'success', message: '成功新增subject!' })
-        })
+        }).catch(error => console.log(error))
     }
   },
   putSubject: (req, res) => {
@@ -38,8 +38,8 @@ const subjectController = {
           subject.update(req.body)
             .then((subject) => {
               res.json({ status: 'success', message: '成功修改subject!' })
-            })
-        })
+            }).catch(error => console.log(error))
+        }).catch(error => console.log(error))
     }
   },
   deleteSubject: (req, res) => {
@@ -48,8 +48,8 @@ const subjectController = {
         subject.destroy()
           .then((subject) => {
             res.json({ status: 'success', message: '成功刪除subject!' })
-          })
-      })
+          }).catch(error => console.log(error))
+      }).catch(error => console.log(error))
   },
 
 }
