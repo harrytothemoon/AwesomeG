@@ -23,7 +23,10 @@ module.exports = {
           name: faker.name.findName(),
           createdAt: new Date(),
           updatedAt: new Date(),
+          introduction: faker.lorem.text(),
+          gender: ['Male', 'Female'][Math.floor(Math.random() * 2)],
           avatar: `https://loremflickr.com/320/240/people/?lock=${Math.random() * 100}`,
+          bankaccount: faker.finance.account(12),
         })
       ), {})
     await queryInterface.bulkInsert('Users',
@@ -35,12 +38,14 @@ module.exports = {
           name: faker.name.findName(),
           createdAt: new Date(),
           updatedAt: new Date(),
+          gender: ['Male', 'Female'][Math.floor(Math.random() * 2)],
+          quantity: 0,
           avatar: `https://loremflickr.com/320/240/people/?lock=${Math.random() * 100}`,
         })
       ), {})
 
     await queryInterface.bulkInsert('Subjects',
-      ['數學', '物理', '化學']
+      ['Math', 'Physical', 'Chemical']
         .map((item, index) =>
           ({
             id: index + 1,
@@ -50,7 +55,7 @@ module.exports = {
           })
         ), {})
     await queryInterface.bulkInsert('Scopes',
-      ['小一', '小二', '小三', '小四', '小五', '小六', '國一', '國二', '國三', '高一', '高二', '高三', '大學以上']
+      ['primary school 1st', 'primary school 2nd', 'primary school 3rd', 'primary school 4th', 'primary school 5th', 'primary school 6th', 'middle school 1st', 'middle school 2nd', 'middle school 3rd', 'high school 1st', 'high school 2nd', 'high school 3rd', 'university or others']
         .map((item, index) =>
           ({
             id: index + 1,
@@ -61,11 +66,24 @@ module.exports = {
         ), {})
 
     await queryInterface.bulkInsert('Statuses',
-      ['wait', 'work', 'done', 'complete']
+      ['wait for a teacher ...', 'working on it !', 'done', 'complete']
         .map((item, index) =>
           ({
             id: index + 1,
             name: item,
+            createdAt: new Date(),
+            updatedAt: new Date()
+          })
+        ), {})
+
+    await queryInterface.bulkInsert('Products',
+      [['Easy Learning', 20, 990], ['Become a master', 66, 2990]]
+        .map((item, index) =>
+          ({
+            id: index + 1,
+            name: item[0],
+            description: item[1],
+            price: item[2],
             createdAt: new Date(),
             updatedAt: new Date()
           })
@@ -78,7 +96,7 @@ module.exports = {
           image: `https://loremflickr.com/320/240/question/?lock=${Math.random() * 100}`,
           StatusId: 1,
           UserId: 8 + Math.floor(Math.random() * 7),
-          SubjectId: 1 + Math.floor(Math.random() * 13),
+          SubjectId: 1 + Math.floor(Math.random() * 3),
           ScopeId: 1 + Math.floor(Math.random() * 4),
           createdAt: new Date(),
           updatedAt: new Date()

@@ -6,28 +6,19 @@ const IMGUR_CLIENT_ID = process.env.IMGUR_CLIENT_ID
 
 const questionController = {
   getQuestions: (req, res) => {
-    Question.findAll(({ include: [Subject, Scope] })).then(questions => {
-      Subject.findAll({
-        raw: true,
-        nest: true
-      }).then(subjects => {
-        Scope.findAll({
-          raw: true,
-          nest: true
-        }).then(scopes => {
-          return res.json({
-            questions,
-            subjects,
-            scopes,
-          })
-        }).catch(error => console.log(error))
-      }).catch(error => console.log(error))
-    })
+    Question.findAll(({
+      where: { StatusId: 1 }, include: [Subject, Scope, Status], raw: true,
+      nest: true
+    })).then(questions => {
+      return res.json({
+        questions,
+      })
+    }).catch(error => console.log(error))
   },
   getMyQuestions: (req, res) => {
     Question.findAll(({
       where: { UserId: req.user.id },
-      include: [Status, Answer],
+      include: [Status, { model: Answer, include: User }, Subject, Scope],
       raw: true,
       nest: true
     }))
