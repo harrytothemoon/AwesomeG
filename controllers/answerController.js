@@ -6,7 +6,7 @@ const IMGUR_CLIENT_ID = process.env.IMGUR_CLIENT_ID
 
 const answerController = {
   getAnswer: (req, res) => {
-    Answer.findAll(({ where: { UserId: req.user.id }, include: { model: Question, include: [Subject, Scope] }, raw: true, nest: true }))
+    Answer.findAll(({ where: { UserId: req.user.id }, include: { model: Question, include: [Subject, Scope] }, raw: true, nest: true, order: [['createdAt', 'DESC']] }))
       .then(answers => {
         return res.json({ answers })
       }).catch(error => console.log(error))
@@ -23,7 +23,7 @@ const answerController = {
             AnswerId: answer.toJSON().id
           })
         }).then(() => {
-          return res.json({ status: 'success', message: '已獲取題目！' })
+          return res.json({ status: 'success', message: 'Get the Question!' })
         })
     }).catch(error => console.log(error))
   },
@@ -44,7 +44,7 @@ const answerController = {
                     StatusId: 3
                   })
                 }).then(() => {
-                  return res.json({ status: 'success', message: '答案已送出！' })
+                  return res.json({ status: 'success', message: 'The answer has been sent!' })
                 }).catch(error => console.log(error))
             }).catch(error => console.log(error))
           })
@@ -60,7 +60,7 @@ const answerController = {
                   StatusId: 3
                 })
               }).then(() => {
-                return res.json({ status: 'success', message: '答案已送出！' })
+                return res.json({ status: 'success', message: 'The answer has been sent!' })
               }).catch(error => console.log(error))
           }).catch(error => console.log(error))
         }

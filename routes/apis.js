@@ -77,7 +77,7 @@ router.put('/admin/products/:id', authenticated, authenticatedAdmin, productCont
 router.delete('/admin/products/:id', authenticated, authenticatedAdmin, productController.deleteProduct)
 
 router.get("/student/orders", authenticated, orderController.getOrders);
-router.post("/student/order", authenticated, orderController.postOrder);
+router.post("/student/order", upload.single(), authenticated, orderController.postOrder);
 
 router.get("/student/order/:id/payment", orderController.getPayment);
 router.post("/spgateway/callback", orderController.spgatewayCallback);

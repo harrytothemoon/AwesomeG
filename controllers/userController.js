@@ -25,7 +25,7 @@ const userController = {
       var token = jwt.sign(payload, process.env.JWT_SECRET)
       return res.json({
         status: 'success',
-        message: 'ok',
+        message: `welcome back! ${user.name}`,
         token: token,
         user: {
           id: user.id, name: user.name, email: user.email, role: user.role
@@ -36,12 +36,12 @@ const userController = {
   signUp: (req, res) => {
     // confirm password
     if (req.body.passwordCheck !== req.body.password) {
-      return res.json({ status: 'error', message: '兩次密碼輸入不同！' })
+      return res.json({ status: 'warning', message: 'Password settings are not consistent.' })
     } else {
       // confirm unique user
       User.findOne({ where: { email: req.body.email } }).then(user => {
         if (user) {
-          return res.json({ status: 'error', message: '信箱重複！' })
+          return res.json({ status: 'warning', message: 'E-mail already exists' })
         } else {
           User.create({
             role: req.body.role,
@@ -49,7 +49,7 @@ const userController = {
             email: req.body.email,
             password: bcrypt.hashSync(req.body.password, bcrypt.genSaltSync(10), null)
           }).then(user => {
-            return res.json({ status: 'success', message: '成功註冊帳號！' })
+            return res.json({ status: 'success', message: 'Sign up successfully!' })
           }).catch(error => console.log(error))
         }
       }).catch(error => console.log(error))

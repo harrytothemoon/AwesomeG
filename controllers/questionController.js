@@ -8,7 +8,7 @@ const questionController = {
   getQuestions: (req, res) => {
     Question.findAll(({
       where: { StatusId: 1 }, include: [Subject, Scope, Status], raw: true,
-      nest: true
+      nest: true, order: [['createdAt', 'DESC']]
     })).then(questions => {
       return res.json({
         questions,
@@ -20,7 +20,8 @@ const questionController = {
       where: { UserId: req.user.id },
       include: [Status, { model: Answer, include: User }, Subject, Scope],
       raw: true,
-      nest: true
+      nest: true,
+      order: [['createdAt', 'DESC']]
     }))
       .then(questions => {
         return res.json({
@@ -46,7 +47,7 @@ const questionController = {
                 StatusId: 1,
                 image: img.data.link,
               }).then((question) => {
-                res.json({ status: 'success', message: '成功提問！' })
+                res.json({ status: 'success', message: 'Post the question successfully!' })
               }).catch(error => console.log(error))
             })
           }
@@ -59,12 +60,12 @@ const questionController = {
               image: null,
               StatusId: 1,
             }).then((question) => {
-              res.json({ status: 'success', message: '成功提問！' })
+              res.json({ status: 'success', message: 'Post the question successfully!' })
             }).catch(error => console.log(error))
           }
         }).catch(error => console.log(error))
       } else {
-        return res.json({ status: 'success', message: '無足夠題數，請充值！' })
+        return res.json({ status: 'warning', message: 'Insufficient balance, please recharge!' })
       }
     })
   },

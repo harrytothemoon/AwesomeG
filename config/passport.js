@@ -13,10 +13,7 @@ jwtOptions.jwtFromRequest = ExtractJwt.fromAuthHeaderAsBearerToken()
 jwtOptions.secretOrKey = process.env.JWT_SECRET
 
 passport.use(new JwtStrategy(jwtOptions, function (jwt_payload, next) {
-  User.findByPk(jwt_payload.id, {
-    include: [
-    ]
-  }).then(user => {
+  User.findByPk(jwt_payload.id).then(user => {
     if (!user) return next(null, false)
     return next(null, user)
   })

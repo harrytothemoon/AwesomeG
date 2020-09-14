@@ -2,6 +2,7 @@ const db = require('../models')
 const crypto = require("crypto");
 const { Order, Product, Payment, User } = db
 const nodemailer = require('nodemailer');
+const VueURL = process.env.VueURL
 
 //通知信
 const transporter = nodemailer.createTransport({
@@ -38,7 +39,7 @@ const orderController = {
       }).then(order => {
         var mailOptions = {
           from: process.env.ACCOUNT,
-          to: process.env.ACCOUNT,
+          to: req.user.email,
           subject: `AwesomeG通知您，訂單已成立!`,
           text: `
           訂單種類：${product.name} 
@@ -53,7 +54,7 @@ const orderController = {
             console.log('Email sent: ' + info.response);
           }
         });
-        return res.json({ status: 'success', message: '成功建立訂單!' })
+        return res.json({ status: 'success', message: ' Place an order successfully!' })
       }).catch(error => console.log(error))
     }).catch(error => console.log(error))
   },
@@ -94,25 +95,27 @@ const orderController = {
         .update({
           payment_status: 1,
         }).then(() => {
-          if (req.query.from === 'NotifyURL') {
-            return User.findByPk(orders[0].dataValues.UserId).then((user) => {
-              user.update({
-                quantity: user.quantity ? user.quantity + Number(orders[0].dataValues.Product.dataValues.description) : Number(orders[0].dataValues.Product.dataValues.description)
-              }).then(() => {
-                return Payment.create({
-                  payment_status: orders[0].payment_status,
-                  amount: data.Result.Amt,
-                  OrderId: orders[0].id,
-                  sn: orders[0].sn,
-                  payment_method: data.Result.PaymentMethod,
-                  paid_at: Date.now()
-                }).then(() => {
-                  return res.json({ status: 'success', message: '成功付款!' })
-                }).catch(error => console.log(error))
-              })
+          if (req.query.from === 'NotifyURL') { return res.json({ status: 'success', message: 'Get the NotifyURL.' }) }
+          if (req.query.from === 'ReturnURL') {
+            return Payment.create({
+              payment_status: orders[0].payment_status,
+              amount: data.Result.Amt,
+              OrderId: orders[0].id,
+              sn: orders[0].sn,
+              payment_method: data.Result.PaymentMethod,
+              paid_at: Date.now()
+            }).then(() => {
+              if (req.body.Status === 'SUCCESS') {
+                return User.findByPk(orders[0].dataValues.UserId).then((user) => {
+                  user.update({
+                    quantity: user.quantity ? user.quantity + Number(orders[0].dataValues.Product.dataValues.description) : Number(orders[0].dataValues.Product.dataValues.description)
+                  }).then(() => {
+                    return res.redirect(`${VueURL}/#/users/${orders[0].dataValues.UserId}/orders`)
+                  }).catch(error => console.log(error))
+                })
+              }
             }).catch(error => console.log(error))
           }
-          return res.json({ status: 'success', message: '成功付款!' })
         }).catch(error => console.log(error))
     }).catch(error => console.log(error))
   },

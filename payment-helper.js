@@ -1,12 +1,13 @@
 const crypto = require("crypto");
 const URL = process.env.URL;
+const VueURL = process.env.VueURL
 const MerchantID = process.env.MERCHANT_ID;
 const HashKey = process.env.HASH_KEY;
 const HashIV = process.env.HASH_IV;
 const PayGateWay = "https://ccore.spgateway.com/MPG/mpg_gateway";
 const ReturnURL = URL + "/api/spgateway/callback?from=ReturnURL";
 const NotifyURL = URL + "/api/spgateway/callback?from=NotifyURL";
-const ClientBackURL = URL + "/student/orders";
+const ClientBackURL = VueURL + "/home";
 
 module.exports = {
   getTradeInfo: function (Amt, Desc, email) {
