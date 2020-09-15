@@ -113,6 +113,11 @@ const userController = {
     } else {
       res.json({ status: 'error', message: "沒有權限修改他人資訊！" })
     }
+  },
+  getCurrentUser: (req, res) => {
+    return User.findByPk(req.user.id).then(user => {
+      res.json({ user })
+    }).catch(error => console.log(error))
   }
 }
 module.exports = userController

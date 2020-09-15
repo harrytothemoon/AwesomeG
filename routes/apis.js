@@ -58,6 +58,7 @@ router.put('/admin/subjects/:id', authenticated, authenticatedAdmin, subjectCont
 router.delete('/admin/subjects/:id', authenticated, authenticatedAdmin, subjectController.deleteSubject)
 
 router.get('/users/teachers', userController.getTeachers)
+router.get('/get_current_user', authenticated, userController.getCurrentUser)
 router.get('/users/:id', authenticated, userController.getUser)
 router.put('/users/:id', authenticated, upload.single('avatar'), userController.putUser)
 
