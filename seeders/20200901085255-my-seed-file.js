@@ -41,6 +41,7 @@ module.exports = {
           gender: ['Male', 'Female'][Math.floor(Math.random() * 2)],
           quantity: 0,
           avatar: `https://loremflickr.com/320/240/people/?lock=${Math.random() * 100}`,
+          grade: ['primary school 1st', 'primary school 2nd', 'primary school 3rd', 'primary school 4th', 'primary school 5th', 'primary school 6th', 'middle school 1st', 'middle school 2nd', 'middle school 3rd', 'high school 1st', 'high school 2nd', 'high school 3rd', 'university or others'][Math.floor(Math.random() * 13)]
         })
       ), {})
 
