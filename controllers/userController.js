@@ -56,8 +56,13 @@ const userController = {
     }
   },
   getTeachers: (req, res) => {
-    User.findAll(({ where: { role: 'teacher' }, include: Answer }))
+    User.findAll({ where: { role: 'teacher' }, include: Answer })
       .then(teachers => {
+        teachers = teachers.map(teacher => ({
+          ...teacher.dataValues,
+          AnswersCount: teacher.Answers.length,
+        }))
+        teachers = teachers.sort((a, b) => b.AnswersCount - a.AnswersCount)
         return res.json({
           teachers,
         })
