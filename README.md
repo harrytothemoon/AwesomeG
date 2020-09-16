@@ -26,10 +26,6 @@ npm run dev
 資料庫：MySQL
 部署：前端(GitHub Page)、後端(Heroku)
 
-#### Home Page
-
-![Webpicture](/public/Homepage.png)
-
 ## User Story
 
 #### Complete
