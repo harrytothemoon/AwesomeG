@@ -76,35 +76,74 @@ const userController = {
     }).catch(error => console.log(error))
   },
   putUser: (req, res) => {
-    console.log(req.params.id, '---', req.user.id)
     if (Number(req.params.id) === req.user.id) {
       const { file } = req
-      if (file) {
-        imgur.setClientID(IMGUR_CLIENT_ID);
-        imgur.upload(file.path, (err, img) => {
+      if (req.body.password || req.body.passwordCheck) {
+        if (req.body.password === req.body.passwordCheck) {
+          if (file) {
+            imgur.setClientID(IMGUR_CLIENT_ID);
+            imgur.upload(file.path, (err, img) => {
+              return User.findByPk(req.params.id)
+                .then((user) => {
+                  user.update({
+                    name: req.body.name ? req.body.name : user.name,
+                    password: req.body.password ? bcrypt.hashSync(req.body.password, bcrypt.genSaltSync(10), null) : user.password,
+                    avatar: img.data.link,
+                    gender: req.body.gender ? req.body.gender : user.gender,
+                    introduction: req.body.introduction ? req.body.introduction : user.introduction,
+                    bankaccount: req.body.bankaccount ? req.body.bankaccount : user.bankaccount,
+                    grade: req.body.grade ? req.body.grade : user.grade
+                  })
+                    .then((user) => {
+                      res.json({ status: 'success', message: "Update Successfully!" })
+                    }).catch(error => console.log(error))
+                }).catch(error => console.log(error))
+            })
+          }
           return User.findByPk(req.params.id)
             .then((user) => {
               user.update({
                 name: req.body.name ? req.body.name : user.name,
                 password: req.body.password ? bcrypt.hashSync(req.body.password, bcrypt.genSaltSync(10), null) : user.password,
-                avatar: img.data.link,
+                avatar: user.avatar,
                 gender: req.body.gender ? req.body.gender : user.gender,
                 introduction: req.body.introduction ? req.body.introduction : user.introduction,
-                bankaccount: req.body.bankaccount ? req.body.bankaccount : user.bankaccount,
+                bankaccount: req.body.introduction ? req.body.introduction : user.introduction,
                 grade: req.body.grade ? req.body.grade : user.grade
               })
                 .then((user) => {
-                  res.json({ status: 'success', message: "資訊成功修改!" })
+                  res.json({ status: 'success', message: "Update Successfully!" })
                 }).catch(error => console.log(error))
             }).catch(error => console.log(error))
-        })
-      }
-      else
+        } else {
+          return res.json({ status: 'warning', message: 'Password settings are not consistent.' })
+        }
+      } else {
+        if (file) {
+          imgur.setClientID(IMGUR_CLIENT_ID);
+          imgur.upload(file.path, (err, img) => {
+            return User.findByPk(req.params.id)
+              .then((user) => {
+                user.update({
+                  name: req.body.name ? req.body.name : user.name,
+                  password: user.password,
+                  avatar: img.data.link,
+                  gender: req.body.gender ? req.body.gender : user.gender,
+                  introduction: req.body.introduction ? req.body.introduction : user.introduction,
+                  bankaccount: req.body.bankaccount ? req.body.bankaccount : user.bankaccount,
+                  grade: req.body.grade ? req.body.grade : user.grade
+                })
+                  .then((user) => {
+                    res.json({ status: 'success', message: "Update Successfully!" })
+                  }).catch(error => console.log(error))
+              }).catch(error => console.log(error))
+          })
+        }
         return User.findByPk(req.params.id)
           .then((user) => {
             user.update({
               name: req.body.name ? req.body.name : user.name,
-              password: req.body.password ? bcrypt.hashSync(req.body.password, bcrypt.genSaltSync(10), null) : user.password,
+              password: user.password,
               avatar: user.avatar,
               gender: req.body.gender ? req.body.gender : user.gender,
               introduction: req.body.introduction ? req.body.introduction : user.introduction,
@@ -112,11 +151,13 @@ const userController = {
               grade: req.body.grade ? req.body.grade : user.grade
             })
               .then((user) => {
-                res.json({ status: 'success', message: "資訊成功修改!" })
+                res.json({ status: 'success', message: "Update Successfully!" })
               }).catch(error => console.log(error))
           }).catch(error => console.log(error))
+      }
+
     } else {
-      res.json({ status: 'error', message: "沒有權限修改他人資訊！" })
+      res.json({ status: 'error', message: "Unauthority!" })
     }
   },
   getCurrentUser: (req, res) => {
