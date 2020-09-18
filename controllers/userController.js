@@ -94,11 +94,10 @@ const userController = {
                     bankaccount: req.body.bankaccount ? req.body.bankaccount : user.bankaccount,
                     grade: req.body.grade ? req.body.grade : user.grade
                   })
-                    .then((user) => {
-                      res.json({ status: 'success', message: "Update Successfully!" })
-                    }).catch(error => console.log(error))
                 }).catch(error => console.log(error))
-            })
+            }).then(() => {
+              res.json({ status: 'success', message: "Update Successfully!" })
+            }).catch(error => console.log(error))
           }
           return User.findByPk(req.params.id)
             .then((user) => {
@@ -133,11 +132,10 @@ const userController = {
                   bankaccount: req.body.bankaccount ? req.body.bankaccount : user.bankaccount,
                   grade: req.body.grade ? req.body.grade : user.grade
                 })
-                  .then((user) => {
-                    res.json({ status: 'success', message: "Update Successfully!" })
-                  }).catch(error => console.log(error))
               }).catch(error => console.log(error))
-          })
+          }).then(() => {
+            res.json({ status: 'success', message: "Update Successfully!" })
+          }).catch(error => console.log(error))
         }
         return User.findByPk(req.params.id)
           .then((user) => {
