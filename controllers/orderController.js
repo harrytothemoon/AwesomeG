@@ -70,17 +70,6 @@ const orderController = {
         sn: Number(tradeInfo.MerchantOrderNo),
       })
         .then((order) => {
-          // res.send(`<form name='Spgateway' action='${tradeInfo.PayGateWay}' method="POST">
-          //   MerchantID:
-          //   <input type="text" name="MerchantID" value="${tradeInfo.MerchantID}"><br>
-          //   TradeInfo:
-          //   <input type="text" name="TradeInfo" value="${tradeInfo.TradeInfo}"><br>
-          //   TradeSha:
-          //   <input type="text" name="TradeSha" value="${tradeInfo.TradeSha}"><br>
-          //   Version:
-          //   <input type="text" name="Version" value="${tradeInfo.Version}"><br>
-          //   <button type="submit" class="btn btn-primary">Payment</button>
-          // </form>`)
           return res.json({ order: order.toJSON(), tradeInfo });
         }).catch(error => console.log(error))
     }).catch(error => console.log(error))

@@ -10,7 +10,7 @@ const productController = {
       if (req.params.id) {
         Product.findByPk(req.params.id)
           .then((product) => {
-            res.json({ products, product })
+            return res.json({ products, product })
           }).catch(error => console.log(error))
       } else {
         return res.json({ products })
@@ -27,7 +27,7 @@ const productController = {
         price: req.body.price,
       })
         .then((product) => {
-          res.json({ status: 'success', message: '成功新增product!' })
+          return res.json({ status: 'success', message: '成功新增product!' })
         }).catch(error => console.log(error))
     }
   },
@@ -39,7 +39,7 @@ const productController = {
         .then((product) => {
           product.update(req.body)
             .then((product) => {
-              res.json({ status: 'success', message: '成功修改product!' })
+              return res.json({ status: 'success', message: '成功修改product!' })
             }).catch(error => console.log(error))
         }).catch(error => console.log(error))
     }
@@ -49,7 +49,7 @@ const productController = {
       .then((product) => {
         product.destroy()
           .then((product) => {
-            res.json({ status: 'success', message: '成功刪除product!' })
+            return res.json({ status: 'success', message: '成功刪除product!' })
           }).catch(error => console.log(error))
       }).catch(error => console.log(error))
   }

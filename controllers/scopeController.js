@@ -10,7 +10,7 @@ const scopeController = {
       if (req.params.id) {
         Scope.findByPk(req.params.id)
           .then((scope) => {
-            res.json({ scopes, scope })
+            return res.json({ scopes, scope })
           }).catch(error => console.log(error))
       } else {
         return res.json({ scopes })
@@ -25,7 +25,7 @@ const scopeController = {
         name: req.body.name
       })
         .then((scope) => {
-          res.json({ status: 'success', message: '成功新增scope!' })
+          return res.json({ status: 'success', message: '成功新增scope!' })
         }).catch(error => console.log(error))
     }
   },
@@ -37,7 +37,7 @@ const scopeController = {
         .then((scope) => {
           scope.update(req.body)
             .then((scope) => {
-              res.json({ status: 'success', message: '成功修改scope!' })
+              return res.json({ status: 'success', message: '成功修改scope!' })
             }).catch(error => console.log(error))
         }).catch(error => console.log(error))
     }
@@ -47,7 +47,7 @@ const scopeController = {
       .then((scope) => {
         scope.destroy()
           .then((scope) => {
-            res.json({ status: 'success', message: '成功刪除scope!' })
+            return res.json({ status: 'success', message: '成功刪除scope!' })
           })
       }).catch(error => console.log(error))
   }

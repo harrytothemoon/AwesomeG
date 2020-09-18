@@ -47,7 +47,7 @@ const questionController = {
                 StatusId: 1,
                 image: img.data.link,
               }).then((question) => {
-                res.json({ status: 'success', message: 'Post the question successfully!' })
+                return res.json({ status: 'success', message: 'Post the question successfully!' })
               }).catch(error => console.log(error))
             })
           }
@@ -60,7 +60,7 @@ const questionController = {
               image: null,
               StatusId: 1,
             }).then((question) => {
-              res.json({ status: 'success', message: 'Post the question successfully!' })
+              return res.json({ status: 'success', message: 'Post the question successfully!' })
             }).catch(error => console.log(error))
           }
         }).catch(error => console.log(error))

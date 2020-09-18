@@ -72,7 +72,7 @@ const userController = {
     return User.findByPk(req.params.id, {
       include: [{ model: Answer, include: [Question] }, Question]
     }).then(user => {
-      res.json({ user })
+      return res.json({ user })
     }).catch(error => console.log(error))
   },
   putUser: (req, res) => {
@@ -82,7 +82,12 @@ const userController = {
         if (req.body.password === req.body.passwordCheck) {
           if (file) {
             imgur.setClientID(IMGUR_CLIENT_ID);
-            imgur.upload(file.path, (err, img) => {
+            let imgurUpload = new Promise((resolve, reject) => {
+              imgur.upload(file.path, (err, img) => {
+                return resolve(img)
+              })
+            })
+            imgurUpload.then((img) => {
               return User.findByPk(req.params.id)
                 .then((user) => {
                   user.update({
@@ -93,33 +98,39 @@ const userController = {
                     introduction: req.body.introduction ? req.body.introduction : user.introduction,
                     bankaccount: req.body.bankaccount ? req.body.bankaccount : user.bankaccount,
                     grade: req.body.grade ? req.body.grade : user.grade
-                  }).then(() => {
-                    res.json({ status: 'success', message: "Update Successfully!" })
-                  }).catch(error => console.log(error))
+                  })
                 }).catch(error => console.log(error))
-            })
-          }
-          return User.findByPk(req.params.id)
-            .then((user) => {
-              user.update({
-                name: req.body.name ? req.body.name : user.name,
-                password: req.body.password ? bcrypt.hashSync(req.body.password, bcrypt.genSaltSync(10), null) : user.password,
-                avatar: user.avatar,
-                gender: req.body.gender ? req.body.gender : user.gender,
-                introduction: req.body.introduction ? req.body.introduction : user.introduction,
-                bankaccount: req.body.introduction ? req.body.introduction : user.introduction,
-                grade: req.body.grade ? req.body.grade : user.grade
-              }).then(() => {
-                res.json({ status: 'success', message: "Update Successfully!" })
-              }).catch(error => console.log(error))
+            }).then(() => {
+              return res.json({ status: 'success', message: "Update Successfully!" })
             }).catch(error => console.log(error))
+          } else {
+            return User.findByPk(req.params.id)
+              .then((user) => {
+                user.update({
+                  name: req.body.name ? req.body.name : user.name,
+                  password: req.body.password ? bcrypt.hashSync(req.body.password, bcrypt.genSaltSync(10), null) : user.password,
+                  avatar: user.avatar,
+                  gender: req.body.gender ? req.body.gender : user.gender,
+                  introduction: req.body.introduction ? req.body.introduction : user.introduction,
+                  bankaccount: req.body.introduction ? req.body.introduction : user.introduction,
+                  grade: req.body.grade ? req.body.grade : user.grade
+                }).then(() => {
+                  return res.json({ status: 'success', message: "Update Successfully!" })
+                }).catch(error => console.log(error))
+              }).catch(error => console.log(error))
+          }
         } else {
           return res.json({ status: 'warning', message: 'Password settings are not consistent.' })
         }
       } else {
         if (file) {
           imgur.setClientID(IMGUR_CLIENT_ID);
-          imgur.upload(file.path, (err, img) => {
+          let imgurUpload = new Promise((resolve, reject) => {
+            imgur.upload(file.path, (err, img) => {
+              return resolve(img)
+            })
+          })
+          imgurUpload.then((img) => {
             return User.findByPk(req.params.id)
               .then((user) => {
                 user.update({
@@ -130,35 +141,35 @@ const userController = {
                   introduction: req.body.introduction ? req.body.introduction : user.introduction,
                   bankaccount: req.body.bankaccount ? req.body.bankaccount : user.bankaccount,
                   grade: req.body.grade ? req.body.grade : user.grade
-                }).then(() => {
-                  res.json({ status: 'success', message: "Update Successfully!" })
-                }).catch(error => console.log(error))
+                })
               }).catch(error => console.log(error))
-          })
-        }
-        return User.findByPk(req.params.id)
-          .then((user) => {
-            user.update({
-              name: req.body.name ? req.body.name : user.name,
-              password: user.password,
-              avatar: user.avatar,
-              gender: req.body.gender ? req.body.gender : user.gender,
-              introduction: req.body.introduction ? req.body.introduction : user.introduction,
-              bankaccount: req.body.introduction ? req.body.introduction : user.introduction,
-              grade: req.body.grade ? req.body.grade : user.grade
-            }).then((user) => {
-              res.json({ status: 'success', message: "Update Successfully!" })
-            }).catch(error => console.log(error))
+          }).then(() => {
+            return res.json({ status: 'success', message: "Update Successfully!" })
           }).catch(error => console.log(error))
+        } else {
+          return User.findByPk(req.params.id)
+            .then((user) => {
+              user.update({
+                name: req.body.name ? req.body.name : user.name,
+                password: user.password,
+                avatar: user.avatar,
+                gender: req.body.gender ? req.body.gender : user.gender,
+                introduction: req.body.introduction ? req.body.introduction : user.introduction,
+                bankaccount: req.body.introduction ? req.body.introduction : user.introduction,
+                grade: req.body.grade ? req.body.grade : user.grade
+              }).then((user) => {
+                return res.json({ status: 'success', message: "Update Successfully!" })
+              }).catch(error => console.log(error))
+            }).catch(error => console.log(error))
+        }
       }
-
     } else {
-      res.json({ status: 'error', message: "Unauthority!" })
+      return res.json({ status: 'error', message: "Unauthority!" })
     }
   },
   getCurrentUser: (req, res) => {
     return User.findByPk(req.user.id).then(user => {
-      res.json({ user })
+      return res.json({ user })
     }).catch(error => console.log(error))
   }
 }
