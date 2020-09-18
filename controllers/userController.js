@@ -93,11 +93,11 @@ const userController = {
                     introduction: req.body.introduction ? req.body.introduction : user.introduction,
                     bankaccount: req.body.bankaccount ? req.body.bankaccount : user.bankaccount,
                     grade: req.body.grade ? req.body.grade : user.grade
-                  })
+                  }).then(() => {
+                    res.json({ status: 'success', message: "Update Successfully!" })
+                  }).catch(error => console.log(error))
                 }).catch(error => console.log(error))
-            }).then(() => {
-              res.json({ status: 'success', message: "Update Successfully!" })
-            }).catch(error => console.log(error))
+            })
           }
           return User.findByPk(req.params.id)
             .then((user) => {
@@ -109,10 +109,9 @@ const userController = {
                 introduction: req.body.introduction ? req.body.introduction : user.introduction,
                 bankaccount: req.body.introduction ? req.body.introduction : user.introduction,
                 grade: req.body.grade ? req.body.grade : user.grade
-              })
-                .then((user) => {
-                  res.json({ status: 'success', message: "Update Successfully!" })
-                }).catch(error => console.log(error))
+              }).then(() => {
+                res.json({ status: 'success', message: "Update Successfully!" })
+              }).catch(error => console.log(error))
             }).catch(error => console.log(error))
         } else {
           return res.json({ status: 'warning', message: 'Password settings are not consistent.' })
@@ -131,11 +130,11 @@ const userController = {
                   introduction: req.body.introduction ? req.body.introduction : user.introduction,
                   bankaccount: req.body.bankaccount ? req.body.bankaccount : user.bankaccount,
                   grade: req.body.grade ? req.body.grade : user.grade
-                })
+                }).then(() => {
+                  res.json({ status: 'success', message: "Update Successfully!" })
+                }).catch(error => console.log(error))
               }).catch(error => console.log(error))
-          }).then(() => {
-            res.json({ status: 'success', message: "Update Successfully!" })
-          }).catch(error => console.log(error))
+          })
         }
         return User.findByPk(req.params.id)
           .then((user) => {
@@ -147,10 +146,9 @@ const userController = {
               introduction: req.body.introduction ? req.body.introduction : user.introduction,
               bankaccount: req.body.introduction ? req.body.introduction : user.introduction,
               grade: req.body.grade ? req.body.grade : user.grade
-            })
-              .then((user) => {
-                res.json({ status: 'success', message: "Update Successfully!" })
-              }).catch(error => console.log(error))
+            }).then((user) => {
+              res.json({ status: 'success', message: "Update Successfully!" })
+            }).catch(error => console.log(error))
           }).catch(error => console.log(error))
       }
 
