@@ -16,9 +16,9 @@ const userController = {
     let password = req.body.password
 
     User.findOne({ where: { email: username } }).then(user => {
-      if (!user) return res.status(401).json({ status: 'error', message: 'no such user found' })
+      if (!user) return res.status(401).json({ status: 'error', message: 'Email or Password Incorrect!' })
       if (!bcrypt.compareSync(password, user.password)) {
-        return res.status(401).json({ status: 'error', message: 'passwords did not match' })
+        return res.status(401).json({ status: 'error', message: 'Email or Password Incorrect!' })
       }
       // 簽發 token
       var payload = { id: user.id }
@@ -59,7 +59,14 @@ const userController = {
     User.findAll({ where: { role: 'teacher' }, include: Answer })
       .then(teachers => {
         teachers = teachers.map(teacher => ({
-          ...teacher.dataValues,
+          "id": teacher.dataValues.id,
+          "name": teacher.dataValues.name,
+          "email": teacher.dataValues.email,
+          "introduction": teacher.dataValues.introduction,
+          "role": teacher.dataValues.role,
+          "avatar": teacher.dataValues.avatar,
+          "gender": teacher.dataValues.gender,
+          "createdAt": teacher.dataValues.createdAt,
           AnswersCount: teacher.Answers.length,
         }))
         teachers = teachers.sort((a, b) => b.AnswersCount - a.AnswersCount)
@@ -69,11 +76,17 @@ const userController = {
       }).catch(error => console.log(error))
   },
   getUser: (req, res) => {
-    return User.findByPk(req.params.id, {
-      include: [{ model: Answer, include: [Question] }, Question]
-    }).then(user => {
-      return res.json({ user })
-    }).catch(error => console.log(error))
+    if (req.params.id === req.user.id) {
+      return User.findByPk(req.params.id, {
+        include: [{ model: Answer, include: [Question] }, Question]
+      }).then(user => {
+        return res.json({ user })
+      }).catch(error => console.log(error))
+    } else {
+      return res.json({
+        status: 'error', message: "Permission denied"
+      })
+    }
   },
   putUser: (req, res) => {
     if (Number(req.params.id) === req.user.id) {
