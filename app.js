@@ -11,19 +11,35 @@ const io = socketIO(server)
 const port = process.env.PORT || 3000
 
 io.on("connection", (socket) => {
-  console.log("user connected");
-  io.emit("chat message", "hello");
 
-  socket.on("private message", (message) => {
-    socket.emit("chat message", message);
+  socket.on("userInfo", (id, role) => {
+    console.log(id, role)
+    socket.join(id)
+    socket.join(role)
   });
 
-  socket.on("global message", (message) => {
-    io.emit("chat message", message);
+  socket.on("postQuestions", (id, role, name, avatar, date) => {
+    //TODO 資料庫存取訊息
+    io.in('teacher').emit("postQuestions", { id, role, name, avatar, date });
   });
 
-  socket.on("broadcast message", (message) => {
-    socket.broadcast.emit("chat message", message);
+  socket.on("postAnswers", (id, role, name, avatar, UserId, StatusId, date) => {
+    //TODO 資料庫存取訊息
+    io.in(UserId).emit("postAnswers", { id, role, name, avatar, UserId, StatusId, date });
+  });
+  socket.on("putAnswers", (id, role, name, avatar, UserId, StatusId, date) => {
+    //TODO 資料庫存取訊息
+    io.in(UserId).emit("postAnswers", { id, role, name, avatar, UserId, StatusId, date });
+  });
+
+  socket.on("unReadUpdate", () => {
+    //TODO 資料庫存取訊息
+    io.in('teacher').emit("postQuestions", { id, role, name, avatar, date });
+  });
+
+  socket.on("openNotifyBox", (message) => {
+    //TODO 資料庫更新unread為0
+    socket.emit("openNotifyBox", message);
   });
 });
 
