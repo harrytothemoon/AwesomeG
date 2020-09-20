@@ -62,25 +62,25 @@ router.get('/get_current_user', authenticated, userController.getCurrentUser)
 router.get('/users/:id', authenticated, userController.getUser)
 router.put('/users/:id', authenticated, upload.single('avatar'), userController.putUser)
 
-router.get('/teacher/questions', authenticated, questionController.getQuestions)
-router.get('/teacher/answers', authenticated, answerController.getAnswer)
-router.post('/teacher/answer', authenticated, answerController.postAnswer)
-router.put('/teacher/answer', authenticated, upload.single('image'), answerController.putAnswer)
+router.get('/teacher/questions', authenticated, authenticatedTeacher, questionController.getQuestions)
+router.get('/teacher/answers', authenticated, authenticatedTeacher, answerController.getAnswer)
+router.post('/teacher/answer', authenticated, authenticatedTeacher, answerController.postAnswer)
+router.put('/teacher/answer', authenticated, authenticatedTeacher, upload.single('image'), answerController.putAnswer)
 
 
-router.get('/student/questions', authenticated, questionController.getMyQuestions)
-router.post('/student/questions', authenticated, upload.single('image'), questionController.postQuestion)
+router.get('/student/questions', authenticated, authenticatedStudent, questionController.getMyQuestions)
+router.post('/student/questions', authenticated, authenticatedStudent, upload.single('image'), questionController.postQuestion)
 
 router.get('/products', productController.getProducts)
-router.get('/admin/products/:id', productController.getProducts)
+router.get('/admin/products/:id', authenticated, productController.getProducts)
 router.post('/admin/products', authenticated, authenticatedAdmin, productController.postProduct)
 router.put('/admin/products/:id', authenticated, authenticatedAdmin, productController.putProduct)
 router.delete('/admin/products/:id', authenticated, authenticatedAdmin, productController.deleteProduct)
 
-router.get("/student/orders", authenticated, orderController.getOrders);
-router.post("/student/order", upload.single(), authenticated, orderController.postOrder);
+router.get("/student/orders", authenticated, authenticatedStudent, orderController.getOrders);
+router.post("/student/order", authenticated, authenticatedStudent, upload.single(), orderController.postOrder);
 
-router.get("/student/order/:id/payment", orderController.getPayment);
+router.get("/student/order/:id/payment", authenticated, authenticatedStudent, orderController.getPayment);
 router.post("/spgateway/callback", orderController.spgatewayCallback);
 
 module.exports = router

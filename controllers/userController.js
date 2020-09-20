@@ -76,7 +76,7 @@ const userController = {
       }).catch(error => console.log(error))
   },
   getUser: (req, res) => {
-    if (req.params.id === req.user.id) {
+    if (Number(req.params.id) === Number(req.user.id)) {
       return User.findByPk(req.params.id, {
         include: [{ model: Answer, include: [Question] }, Question]
       }).then(user => {

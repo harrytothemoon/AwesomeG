@@ -33,7 +33,12 @@ const answerController = {
         const { file } = req
         if (file) {
           imgur.setClientID(IMGUR_CLIENT_ID);
-          imgur.upload(file.path, (err, img) => {
+          let imgurUpload = new Promise((resolve, reject) => {
+            imgur.upload(file.path, (err, img) => {
+              return resolve(img)
+            })
+          })
+          imgurUpload.then((img) => {
             return answer.update({
               answer: req.body.answer,
               image: img.data.link,
@@ -43,11 +48,11 @@ const answerController = {
                   question.update({
                     StatusId: 3
                   })
-                }).then(() => {
-                  return res.json({ status: 'success', message: 'The answer has been sent!' })
-                }).catch(error => console.log(error))
+                })
             }).catch(error => console.log(error))
-          })
+          }).then(() => {
+            return res.json({ status: 'success', message: 'The answer has been sent!' })
+          }).catch(error => console.log(error))
         }
         else {
           return answer.update({

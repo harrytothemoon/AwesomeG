@@ -21,7 +21,7 @@ const questionController = {
       include: [Status, { model: Answer, include: User }, Subject, Scope],
       raw: true,
       nest: true,
-      order: [['createdAt', 'DESC']]
+      order: [['updatedAt', 'DESC']]
     }))
       .then(questions => {
         return res.json({
@@ -38,7 +38,12 @@ const questionController = {
         }).then(() => {
           if (file) {
             imgur.setClientID(IMGUR_CLIENT_ID);
-            imgur.upload(file.path, (err, img) => {
+            let imgurUpload = new Promise((resolve, reject) => {
+              imgur.upload(file.path, (err, img) => {
+                return resolve(img)
+              })
+            })
+            imgurUpload.then((img) => {
               return Question.create({
                 SubjectId: req.body.subjectId,
                 ScopeId: req.body.scopeId,
@@ -46,10 +51,10 @@ const questionController = {
                 description: req.body.description,
                 StatusId: 1,
                 image: img.data.link,
-              }).then((question) => {
-                return res.json({ status: 'success', message: 'Post the question successfully!' })
-              }).catch(error => console.log(error))
-            })
+              })
+            }).then((question) => {
+              return res.json({ status: 'success', message: 'Post the question successfully!' })
+            }).catch(error => console.log(error))
           }
           else {
             return Question.create({
