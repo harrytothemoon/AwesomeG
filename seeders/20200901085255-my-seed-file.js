@@ -27,6 +27,7 @@ module.exports = {
           gender: ['Male', 'Female'][Math.floor(Math.random() * 2)],
           avatar: `https://loremflickr.com/320/240/people/?lock=${Math.random() * 100}`,
           bankaccount: faker.finance.account(12),
+          expertise: ['Math', 'Chemical', 'Physical'][Math.floor(Math.random() * 3)],
         })
       ), {})
     await queryInterface.bulkInsert('Users',

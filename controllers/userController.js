@@ -66,6 +66,7 @@ const userController = {
           "role": teacher.dataValues.role,
           "avatar": teacher.dataValues.avatar,
           "gender": teacher.dataValues.gender,
+          "expertise": teacher.dataValues.expertise,
           "createdAt": teacher.dataValues.createdAt,
           AnswersCount: teacher.Answers.length,
         }))
@@ -110,6 +111,7 @@ const userController = {
                     gender: req.body.gender ? req.body.gender : user.gender,
                     introduction: req.body.introduction ? req.body.introduction : user.introduction,
                     bankaccount: req.body.bankaccount ? req.body.bankaccount : user.bankaccount,
+                    expertise: req.body.expertise ? req.body.expertise : user.expertise,
                     grade: req.body.grade ? req.body.grade : user.grade
                   })
                 }).catch(error => console.log(error))
@@ -125,7 +127,8 @@ const userController = {
                   avatar: user.avatar,
                   gender: req.body.gender ? req.body.gender : user.gender,
                   introduction: req.body.introduction ? req.body.introduction : user.introduction,
-                  bankaccount: req.body.introduction ? req.body.introduction : user.introduction,
+                  bankaccount: req.body.bankaccount ? req.body.bankaccount : user.bankaccount,
+                  expertise: req.body.expertise ? req.body.expertise : user.expertise,
                   grade: req.body.grade ? req.body.grade : user.grade
                 }).then(() => {
                   return res.json({ status: 'success', message: "Update Successfully!" })
@@ -153,6 +156,7 @@ const userController = {
                   gender: req.body.gender ? req.body.gender : user.gender,
                   introduction: req.body.introduction ? req.body.introduction : user.introduction,
                   bankaccount: req.body.bankaccount ? req.body.bankaccount : user.bankaccount,
+                  expertise: req.body.expertise ? req.body.expertise : user.expertise,
                   grade: req.body.grade ? req.body.grade : user.grade
                 })
               }).catch(error => console.log(error))
@@ -168,7 +172,8 @@ const userController = {
                 avatar: user.avatar,
                 gender: req.body.gender ? req.body.gender : user.gender,
                 introduction: req.body.introduction ? req.body.introduction : user.introduction,
-                bankaccount: req.body.introduction ? req.body.introduction : user.introduction,
+                bankaccount: req.body.bankaccount ? req.body.bankaccount : user.bankaccount,
+                expertise: req.body.expertise ? req.body.expertise : user.expertise,
                 grade: req.body.grade ? req.body.grade : user.grade
               }).then((user) => {
                 return res.json({ status: 'success', message: "Update Successfully!" })

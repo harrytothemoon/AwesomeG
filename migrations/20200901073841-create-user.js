@@ -38,6 +38,12 @@ module.exports = {
       bankaccount: {
         type: Sequelize.STRING
       },
+      expertise: {
+        type: Sequelize.STRING
+      },
+      unread: {
+        type: Sequelize.INTEGER
+      },
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE
