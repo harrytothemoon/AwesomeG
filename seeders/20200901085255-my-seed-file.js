@@ -97,9 +97,9 @@ module.exports = {
           description: faker.lorem.text(),
           image: `https://loremflickr.com/320/240/question/?lock=${Math.random() * 100}`,
           StatusId: 1,
-          UserId: 8 + Math.floor(Math.random() * 7),
+          UserId: 8 + Math.floor(Math.random() * 6),
           SubjectId: 1 + Math.floor(Math.random() * 3),
-          ScopeId: 1 + Math.floor(Math.random() * 4),
+          ScopeId: 1 + Math.floor(Math.random() * 13),
           createdAt: new Date(),
           updatedAt: new Date()
         })

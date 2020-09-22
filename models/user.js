@@ -13,6 +13,7 @@ module.exports = (sequelize, DataTypes) => {
       // define association here
       User.hasMany(models.Question)
       User.hasMany(models.Answer)
+      User.hasMany(models.Notification)
     }
   };
   User.init({
