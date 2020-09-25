@@ -74,5 +74,10 @@ module.exports = socketServer = (server) => {
         })
       })
     });
+
+    socket.on("userlogout", (id, role) => {
+      socket.leave(id)
+      socket.leave(role)
+    });
   });
 }
