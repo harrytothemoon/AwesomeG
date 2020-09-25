@@ -11,6 +11,13 @@ const notificationController = {
       limit: 10,
       include: [User, { model: User, as: 'teacher' }]
     })).then(notifications => {
+      notifications = notifications.map(notification => ({
+        "createdAt": notification.createdAt,
+        "avatar": notification.teacher.avatar,
+        "name": notification.teacher.name,
+        "msg": notification.msg,
+        "unRead": notification.User.unread
+      }))
       return res.json({ notifications })
     }).catch(error => console.log(error))
   },
