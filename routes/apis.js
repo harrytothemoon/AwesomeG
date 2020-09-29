@@ -19,24 +19,33 @@ const authenticated = passport.authenticate('jwt', { session: false })
 
 const authenticatedAdmin = (req, res, next) => {
   if (req.user) {
-    if (req.user.role === 'admin') { return next() }
-    return res.json({ status: 'error', message: 'permission denied!' })
+    if (req.user.role === 'admin') {
+      return next()
+    } else {
+      return res.json({ status: 'error', message: 'permission denied!' })
+    }
   } else {
     return res.json({ status: 'error', message: 'permission denied!' })
   }
 }
 const authenticatedStudent = (req, res, next) => {
   if (req.user) {
-    if (req.user.role === 'student' || req.user.role === 'admin') { return next() }
-    return res.json({ status: 'error', message: "your account is not a student's account!" })
+    if (req.user.role === 'student' || req.user.role === 'admin') {
+      return next()
+    } else {
+      return res.json({ status: 'error', message: "your account is not a student's account!" })
+    }
   } else {
     return res.json({ status: 'error', message: 'permission denied!' })
   }
 }
 const authenticatedTeacher = (req, res, next) => {
   if (req.user) {
-    if (req.user.role === 'teacher' || req.user.role === 'admin') { return next() }
-    return res.json({ status: 'error', message: "your account is not a teacher's account!" })
+    if (req.user.role === 'teacher' || req.user.role === 'admin') {
+      return next()
+    } else {
+      return res.json({ status: 'error', message: "your account is not a teacher's account!" })
+    }
   } else {
     return res.json({ status: 'error', message: 'permission denied' })
   }
