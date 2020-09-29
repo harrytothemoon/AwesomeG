@@ -1,24 +1,10 @@
 'use strict';
-const {
-  Model
-} = require('sequelize');
 module.exports = (sequelize, DataTypes) => {
-  class Scope extends Model {
-    /**
-     * Helper method for defining associations.
-     * This method is not a part of Sequelize lifecycle.
-     * The `models/index` file will call this method automatically.
-     */
-    static associate(models) {
-      // define association here
-      Scope.hasMany(models.Question)
-    }
-  };
-  Scope.init({
+  const Scope = sequelize.define('Scope', {
     name: DataTypes.STRING
-  }, {
-    sequelize,
-    modelName: 'Scope',
-  });
+  }, {});
+  Scope.associate = function (models) {
+    Scope.hasMany(models.Question)
+  };
   return Scope;
 };
