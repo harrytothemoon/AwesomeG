@@ -66,7 +66,7 @@ describe('# Notification request', () => {
   })
 
   after(async () => {
-    // remove the test user and url
+    // remove the test user
     await User.destroy({ where: {}, truncate: true })
     await Notification.destroy({ where: {}, truncate: true })
   })

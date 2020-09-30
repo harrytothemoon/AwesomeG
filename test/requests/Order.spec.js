@@ -4,44 +4,46 @@ const fetch = require('node-fetch')
 const HOST = process.env.HOST || 'http://localhost'
 const INTERNAL_PORT = 3000
 const db = require('../../models')
-const { Answer, User, Question } = db
+const { Order, User, Product } = db
 
-describe('# Answer request', () => {
+describe('# Order request', () => {
   let token = ''     // for saving sign in token
-  const testTeacher = {
+  const testStudent = {
     name: 'test',
     email: 'test@example.com',
     password: 'test',
-    role: 'teacher'
+    role: 'student'
   }
-  const testQuestion = {
+  const testProduct = {
+    name: 'test',
     description: 'test',
-    UserId: '2',
+    price: 123,
   }
   before(async () => {
     await User.destroy({ where: {}, truncate: true })
-    await Answer.destroy({ where: {}, truncate: true })
-    await Question.destroy({ where: {}, truncate: true })
+    await Order.destroy({ where: {}, truncate: true })
+    await Product.destroy({ where: {}, truncate: true })
     // create a test user
     const salt = await bcrypt.genSalt(10)
-    const hash = await bcrypt.hash(testTeacher.password, salt)
+    const hash = await bcrypt.hash(testStudent.password, salt)
     await User.create({
-      name: testTeacher.name,
-      email: testTeacher.email,
+      name: testStudent.name,
+      email: testStudent.email,
       password: hash,
-      role: testTeacher.role
+      role: testStudent.role
     })
-    await Question.create({
-      description: testQuestion.description,
-      UserId: testQuestion.UserId,
+    await Product.create({
+      description: testProduct.description,
+      price: testProduct.price,
+      name: testProduct.name
     })
     // sign in as test user   
     await fetch(`${HOST}:${INTERNAL_PORT}/api/signin`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        email: testTeacher.email,
-        password: testTeacher.password
+        email: testStudent.email,
+        password: testStudent.password
       })
     })
       .then(res => res.json())
@@ -50,44 +52,26 @@ describe('# Answer request', () => {
       })
   })
 
-  it('POST /api/teacher/answer', async () => {
-    await fetch(`${HOST}:${INTERNAL_PORT}/api/teacher/answer`, {
+  it('POST /api/student/order', async () => {
+    await fetch(`${HOST}:${INTERNAL_PORT}/api/student/order`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
         'Authorization': 'Bearer ' + token,
       },
-      body: JSON.stringify({ questionId: 1 })
+      body: JSON.stringify({ productId: 1, payment_status: 0, amount: testProduct.price })
     })
       .then(res => {
         assert.strictEqual(res.status, 200)
         return res.json()
       })
       .then(res => {
-        assert.strictEqual(res.message, 'Get the Question!')
+        assert.strictEqual(res.message, 'Place an order successfully!')
       })
   })
 
-  it('PUT /api/teacher/answer', async () => {
-    await fetch(`${HOST}:${INTERNAL_PORT}/api/teacher/answer`, {
-      method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer ' + token,
-      },
-      body: JSON.stringify({ questionId: 1, answer: 'test' })
-    })
-      .then(res => {
-        assert.strictEqual(res.status, 200)
-        return res.json()
-      })
-      .then(res => {
-        assert.strictEqual(res.message, 'The answer has been sent!')
-      })
-  })
-
-  it('GET /api/teacher/answers', async () => {
-    await fetch(`${HOST}:${INTERNAL_PORT}/api/teacher/answers`, {
+  it('GET /api/student/orders', async () => {
+    await fetch(`${HOST}:${INTERNAL_PORT}/api/student/orders`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
@@ -98,14 +82,30 @@ describe('# Answer request', () => {
         assert.strictEqual(res.status, 200)
         return res.json()
       }).then(res => {
-        assert.strictEqual(res.answers[0].UserId, 1)
+        assert.strictEqual(res.orders[0].UserId, 1)
+      })
+  })
+
+  it('GET /api/student/order/:id/payment', async () => {
+    await fetch(`${HOST}:${INTERNAL_PORT}/api/student/order/${1}/payment`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + token,
+      }
+    })
+      .then(res => {
+        assert.strictEqual(res.status, 200)
+        return res.json()
+      }).then(res => {
+        assert.strictEqual(res.order.amount, testProduct.price)
       })
   })
 
   after(async () => {
-    // remove the test user
+    // remove the test user and url
     await User.destroy({ where: {}, truncate: true })
-    await Answer.destroy({ where: {}, truncate: true })
-    await Question.destroy({ where: {}, truncate: true })
+    await Order.destroy({ where: {}, truncate: true })
+    await Product.destroy({ where: {}, truncate: true })
   })
 })

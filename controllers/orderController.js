@@ -54,7 +54,7 @@ const orderController = {
             console.log('Email sent: ' + info.response);
           }
         });
-        return res.json({ status: 'success', message: ' Place an order successfully!' })
+        return res.json({ status: 'success', message: 'Place an order successfully!' })
       }).catch(error => console.log(error))
     }).catch(error => console.log(error))
   },
