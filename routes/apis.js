@@ -13,6 +13,7 @@ const questionController = require('../controllers/questionController.js')
 const userController = require('../controllers/userController.js')
 const productController = require('../controllers/productController.js')
 const orderController = require('../controllers/orderController.js')
+const paymentController = require('../controllers/paymentController.js')
 const notificationController = require('../controllers/notificationController.js')
 
 const authenticated = passport.authenticate('jwt', { session: false })
@@ -91,7 +92,7 @@ router.get("/student/orders", authenticated, authenticatedStudent, orderControll
 router.post("/student/order", authenticated, authenticatedStudent, upload.single(), orderController.postOrder);
 
 router.get("/student/order/:id/payment", authenticated, authenticatedStudent, orderController.getPayment);
-router.post("/spgateway/callback", orderController.spgatewayCallback);
+router.post("/spgateway/callback", paymentController.spgatewayCallback);
 
 router.get('/notifications', authenticated, authenticatedStudent, notificationController.getNotifications)
 

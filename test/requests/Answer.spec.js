@@ -1,10 +1,10 @@
-const assert = require('assert')
 const bcrypt = require('bcryptjs')
-const fetch = require('node-fetch')
-const HOST = process.env.HOST || 'http://localhost'
-const INTERNAL_PORT = 3000
+const request = require('supertest')
 const db = require('../../models')
 const { Answer, User, Question } = db
+const { expect } = require('chai')
+
+const app = require('../../app')
 
 describe('# Answer Request', () => {
   let token = ''     // for saving sign in token
@@ -36,70 +36,60 @@ describe('# Answer Request', () => {
       UserId: testQuestion.UserId,
     })
     // sign in as test user   
-    await fetch(`${HOST}:${INTERNAL_PORT}/api/signin`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
+    const res = await request(app)
+      .post('/api/signin')
+      .set({
+        'Content-Type': 'application/json',
+      })
+      .send({
         email: testTeacher.email,
         password: testTeacher.password
       })
-    })
-      .then(res => res.json())
-      .then(res => {
-        token = res.token
-      })
+      .expect(200)
+    token = res.body.token
   })
 
   it('POST /api/teacher/answer', async () => {
-    await fetch(`${HOST}:${INTERNAL_PORT}/api/teacher/answer`, {
-      method: 'POST',
-      headers: {
+    const res = await request(app)
+      .post('/api/teacher/answer')
+      .set({
         'Content-Type': 'application/json',
-        'Authorization': 'Bearer ' + token,
-      },
-      body: JSON.stringify({ questionId: 1 })
-    })
-      .then(res => {
-        assert.strictEqual(res.status, 200)
-        return res.json()
+        'Authorization': 'Bearer ' + token
       })
-      .then(res => {
-        assert.strictEqual(res.message, 'Get the Question!')
+      .send({
+        questionId: 1,
       })
+      .expect(200)
+
+    expect(res.body.message).to.be.equal('Get the Question!')
   })
 
   it('PUT /api/teacher/answer', async () => {
-    await fetch(`${HOST}:${INTERNAL_PORT}/api/teacher/answer`, {
-      method: 'PUT',
-      headers: {
+    const res = await request(app)
+      .put('/api/teacher/answer')
+      .set({
         'Content-Type': 'application/json',
-        'Authorization': 'Bearer ' + token,
-      },
-      body: JSON.stringify({ questionId: 1, answer: 'test' })
-    })
-      .then(res => {
-        assert.strictEqual(res.status, 200)
-        return res.json()
+        'Authorization': 'Bearer ' + token
       })
-      .then(res => {
-        assert.strictEqual(res.message, 'The answer has been sent!')
+      .send({
+        questionId: 1,
+        answer: 'test'
       })
+      .expect(200)
+
+    expect(res.body.message).to.be.equal('The answer has been sent!')
   })
 
   it('GET /api/teacher/answers', async () => {
-    await fetch(`${HOST}:${INTERNAL_PORT}/api/teacher/answers`, {
-      method: 'GET',
-      headers: {
+    const res = await request(app)
+      .get('/api/teacher/answers')
+      .set({
         'Content-Type': 'application/json',
-        'Authorization': 'Bearer ' + token,
-      }
-    })
-      .then(res => {
-        assert.strictEqual(res.status, 200)
-        return res.json()
-      }).then(res => {
-        assert.strictEqual(res.answers[0].UserId, 1)
+        'Authorization': 'Bearer ' + token
       })
+      .expect(200)
+
+    expect(res.body.answers[0].UserId).to.be.equal(1)
   })
 
   after(async () => {

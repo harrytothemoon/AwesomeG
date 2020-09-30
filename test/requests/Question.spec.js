@@ -1,10 +1,10 @@
-const assert = require('assert')
 const bcrypt = require('bcryptjs')
-const fetch = require('node-fetch')
-const HOST = process.env.HOST || 'http://localhost'
-const INTERNAL_PORT = 3000
+const request = require('supertest')
 const db = require('../../models')
 const { User, Question } = db
+const { expect } = require('chai')
+
+const app = require('../../app')
 
 describe('# Question Request', () => {
   let token = ''     // for saving sign in token
@@ -29,89 +29,81 @@ describe('# Question Request', () => {
       quantity: testAdmin.quantity
     })
     // sign in as test user   
-    await fetch(`${HOST}:${INTERNAL_PORT}/api/signin`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
+    const res = await request(app)
+      .post('/api/signin')
+      .set({
+        'Content-Type': 'application/json',
+      })
+      .send({
         email: testAdmin.email,
         password: testAdmin.password
       })
-    })
-      .then(res => res.json())
-      .then(res => {
-        token = res.token
-      })
+      .expect(200)
+    token = res.body.token
   })
   context('# POST /api/student/questions', () => {
     it('Post the question with enough quantity', async () => {
-      await fetch(`${HOST}:${INTERNAL_PORT}/api/student/questions`, {
-        method: 'POST',
-        headers: {
+      const res = await request(app)
+        .post('/api/student/questions')
+        .set({
           'Content-Type': 'application/json',
-          'Authorization': 'Bearer ' + token,
-        },
-        body: JSON.stringify({ description: 'test', subjectId: 1, scopeId: 1, StatusId: 1 })
-      })
-        .then(res => {
-          assert.strictEqual(res.status, 200)
-          return res.json()
+          'Authorization': 'Bearer ' + token
         })
-        .then(res => {
-          assert.strictEqual(res.message, 'Post the question successfully!')
+        .send({
+          description: 'test',
+          subjectId: 1,
+          scopeId: 1,
+          StatusId: 1
         })
+        .expect(200)
+
+      expect(res.body.message).to.be.equal('Post the question successfully!')
     })
     it('Post the question without enough quantity', async () => {
-      await fetch(`${HOST}:${INTERNAL_PORT}/api/student/questions`, {
-        method: 'POST',
-        headers: {
+      const res = await request(app)
+        .post('/api/student/questions')
+        .set({
           'Content-Type': 'application/json',
-          'Authorization': 'Bearer ' + token,
-        },
-        body: JSON.stringify({ description: 'test2', subjectId: 2, scopeId: 2, StatusId: 1 })
-      })
-        .then(res => {
-          assert.strictEqual(res.status, 200)
-          return res.json()
+          'Authorization': 'Bearer ' + token
         })
-        .then(res => {
-          assert.strictEqual(res.message, 'Insufficient balance, please recharge!')
+        .send({
+          description: 'test2',
+          subjectId: 2,
+          scopeId: 2,
+          StatusId: 1
         })
+        .expect(200)
+
+      expect(res.body.message).to.be.equal('Insufficient balance, please recharge!')
     })
   })
 
   context('# GET /api/student/questions', () => {
     it('get student questions successfully', async () => {
-      await fetch(`${HOST}:${INTERNAL_PORT}/api/student/questions`, {
-        method: 'GET',
-        headers: {
+      const res = await request(app)
+        .get('/api/student/questions')
+        .set({
           'Content-Type': 'application/json',
-          'Authorization': 'Bearer ' + token,
-        }
-      })
-        .then(res => {
-          assert.strictEqual(res.status, 200)
-          return res.json()
-        }).then(res => {
-          assert.strictEqual(res.questions[0].description, 'test')
+          'Authorization': 'Bearer ' + token
         })
+        .expect(200)
+
+      expect(res.body.questions[0].description).to.be.equal('test')
     })
   })
 
   context('# GET /api/teacher/questions', () => {
+
     it('get teacher questions successfully', async () => {
-      await fetch(`${HOST}:${INTERNAL_PORT}/api/teacher/questions`, {
-        method: 'GET',
-        headers: {
+      const res = await request(app)
+        .get('/api/teacher/questions')
+        .set({
           'Content-Type': 'application/json',
-          'Authorization': 'Bearer ' + token,
-        }
-      })
-        .then(res => {
-          assert.strictEqual(res.status, 200)
-          return res.json()
-        }).then(res => {
-          assert.strictEqual(res.questions[0].description, 'test')
+          'Authorization': 'Bearer ' + token
         })
+        .expect(200)
+
+      expect(res.body.questions[0].description).to.be.equal('test')
     })
   })
   after(async () => {

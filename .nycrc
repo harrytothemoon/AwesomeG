@@ -1,0 +1,26 @@
+{
+  "include": [
+    "controllers/answerController.js",
+    "controllers/notificationController.js",
+    "controllers/orderController.js",
+    "controllers/productController.js",
+    "controllers/questionController.js",
+    "controllers/scopeController.js",
+    "controllers/subjectController.js",
+    "controllers/userController.js",
+    "models/answer.js",
+    "models/notification.js",
+    "models/order.js",
+    "models/payment.js",
+    "models/product.js",
+    "models/question.js",
+    "models/scope.js",
+    "models/status.js",
+    "models/subject.js",
+    "models/user.js"
+  ],
+  "reporter":[
+    "text",
+    "html"
+  ]
+}

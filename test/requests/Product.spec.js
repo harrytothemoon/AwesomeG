@@ -1,10 +1,10 @@
-const assert = require('assert')
 const bcrypt = require('bcryptjs')
-const fetch = require('node-fetch')
-const HOST = process.env.HOST || 'http://localhost'
-const INTERNAL_PORT = 3000
+const request = require('supertest')
 const db = require('../../models')
 const { User, Product } = db
+const { expect } = require('chai')
+
+const app = require('../../app')
 
 describe('# Product Request', () => {
   let token = ''     // for saving sign in token
@@ -27,103 +27,87 @@ describe('# Product Request', () => {
       role: testAdmin.role
     })
     // sign in as test user   
-    await fetch(`${HOST}:${INTERNAL_PORT}/api/signin`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
+    const res = await request(app)
+      .post('/api/signin')
+      .set({
+        'Content-Type': 'application/json',
+      })
+      .send({
         email: testAdmin.email,
         password: testAdmin.password
       })
-    })
-      .then(res => res.json())
-      .then(res => {
-        token = res.token
-      })
+      .expect(200)
+    token = res.body.token
   })
 
   it('POST /api/admin/products', async () => {
-    await fetch(`${HOST}:${INTERNAL_PORT}/api/admin/products`, {
-      method: 'POST',
-      headers: {
+    const res = await request(app)
+      .post('/api/admin/products')
+      .set({
         'Content-Type': 'application/json',
-        'Authorization': 'Bearer ' + token,
-      },
-      body: JSON.stringify({ name: 'test', description: 'test', price: 123 })
-    })
-      .then(res => {
-        assert.strictEqual(res.status, 200)
-        return res.json()
+        'Authorization': 'Bearer ' + token
       })
-      .then(res => {
-        assert.strictEqual(res.message, 'Place the product successfully!')
+      .send({
+        name: 'test',
+        description: 'test',
+        price: 123
       })
+      .expect(200)
+
+    expect(res.body.message).to.be.equal('Place the product successfully!')
   })
 
   it('GET /api/products', async () => {
-    await fetch(`${HOST}:${INTERNAL_PORT}/api/products`, {
-      method: 'GET',
-      headers: {
+    const res = await request(app)
+      .get('/api/products')
+      .set({
         'Content-Type': 'application/json',
-        'Authorization': 'Bearer ' + token,
-      }
-    })
-      .then(res => {
-        assert.strictEqual(res.status, 200)
-        return res.json()
-      }).then(res => {
-        assert.strictEqual(res.products[0].name, 'test')
+        'Authorization': 'Bearer ' + token
       })
+      .expect(200)
+
+    expect(res.body.products[0].name).to.be.equal('test')
   })
 
   it('PUT /api/admin/products/:id', async () => {
-    await fetch(`${HOST}:${INTERNAL_PORT}/api/admin/products/${1}`, {
-      method: 'PUT',
-      headers: {
+    const res = await request(app)
+      .put(`/api/admin/products/${1}`)
+      .set({
         'Content-Type': 'application/json',
-        'Authorization': 'Bearer ' + token,
-      },
-      body: JSON.stringify({ name: 'puttest', description: 'puttest', price: 456 })
-    })
-      .then(res => {
-        assert.strictEqual(res.status, 200)
-        return res.json()
+        'Authorization': 'Bearer ' + token
       })
-      .then(res => {
-        assert.strictEqual(res.message, 'Edit the product successfully!')
+      .send({
+        name: 'puttest',
+        description: 'puttest',
+        price: 456
       })
+      .expect(200)
+
+    expect(res.body.message).to.be.equal('Edit the product successfully!')
   })
 
   it('GET /api/admin/products/:id', async () => {
-    await fetch(`${HOST}:${INTERNAL_PORT}/api/admin/products/${1}`, {
-      method: 'GET',
-      headers: {
+    const res = await request(app)
+      .get(`/api/admin/products/${1}`)
+      .set({
         'Content-Type': 'application/json',
-        'Authorization': 'Bearer ' + token,
-      }
-    })
-      .then(res => {
-        assert.strictEqual(res.status, 200)
-        return res.json()
-      }).then(res => {
-        assert.strictEqual(res.product.name, 'puttest')
+        'Authorization': 'Bearer ' + token
       })
+      .expect(200)
+
+    expect(res.body.product.name).to.be.equal('puttest')
   })
 
   it('DELETE /api/admin/products/:id', async () => {
-    await fetch(`${HOST}:${INTERNAL_PORT}/api/admin/products/${1}`, {
-      method: 'DELETE',
-      headers: {
+    const res = await request(app)
+      .delete(`/api/admin/products/${1}`)
+      .set({
         'Content-Type': 'application/json',
-        'Authorization': 'Bearer ' + token,
-      },
-    })
-      .then(res => {
-        assert.strictEqual(res.status, 200)
-        return res.json()
+        'Authorization': 'Bearer ' + token
       })
-      .then(res => {
-        assert.strictEqual(res.message, 'Remove the product successfully!')
-      })
+      .expect(200)
+
+    expect(res.body.message).to.be.equal('Remove the product successfully!')
   })
 
   after(async () => {

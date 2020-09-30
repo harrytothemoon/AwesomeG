@@ -1,10 +1,10 @@
-const assert = require('assert')
 const bcrypt = require('bcryptjs')
-const fetch = require('node-fetch')
-const HOST = process.env.HOST || 'http://localhost'
-const INTERNAL_PORT = 3000
+const request = require('supertest')
 const db = require('../../models')
 const { User, Subject } = db
+const { expect } = require('chai')
+
+const app = require('../../app')
 
 describe('# Subject Request', () => {
   let token = ''     // for saving sign in token
@@ -27,103 +27,83 @@ describe('# Subject Request', () => {
       role: testAdmin.role
     })
     // sign in as test user   
-    await fetch(`${HOST}:${INTERNAL_PORT}/api/signin`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
+    const res = await request(app)
+      .post('/api/signin')
+      .set({
+        'Content-Type': 'application/json',
+      })
+      .send({
         email: testAdmin.email,
         password: testAdmin.password
       })
-    })
-      .then(res => res.json())
-      .then(res => {
-        token = res.token
-      })
+      .expect(200)
+    token = res.body.token
   })
 
   it('POST /api/admin/subjects', async () => {
-    await fetch(`${HOST}:${INTERNAL_PORT}/api/admin/subjects`, {
-      method: 'POST',
-      headers: {
+    const res = await request(app)
+      .post('/api/admin/subjects')
+      .set({
         'Content-Type': 'application/json',
-        'Authorization': 'Bearer ' + token,
-      },
-      body: JSON.stringify({ name: 'test' })
-    })
-      .then(res => {
-        assert.strictEqual(res.status, 200)
-        return res.json()
+        'Authorization': 'Bearer ' + token
       })
-      .then(res => {
-        assert.strictEqual(res.message, 'Create the subject successfully!')
+      .send({
+        name: 'test',
       })
+      .expect(200)
+
+    expect(res.body.message).to.be.equal('Create the subject successfully!')
   })
 
   it('GET /api/subjects', async () => {
-    await fetch(`${HOST}:${INTERNAL_PORT}/api/subjects`, {
-      method: 'GET',
-      headers: {
+    const res = await request(app)
+      .get('/api/subjects')
+      .set({
         'Content-Type': 'application/json',
-        'Authorization': 'Bearer ' + token,
-      }
-    })
-      .then(res => {
-        assert.strictEqual(res.status, 200)
-        return res.json()
-      }).then(res => {
-        assert.strictEqual(res.subjects[0].name, 'test')
+        'Authorization': 'Bearer ' + token
       })
+      .expect(200)
+
+    expect(res.body.subjects[0].name).to.be.equal('test')
   })
 
   it('PUT /api/admin/subjects/:id', async () => {
-    await fetch(`${HOST}:${INTERNAL_PORT}/api/admin/subjects/${1}`, {
-      method: 'PUT',
-      headers: {
+    const res = await request(app)
+      .put(`/api/admin/subjects/${1}`)
+      .set({
         'Content-Type': 'application/json',
-        'Authorization': 'Bearer ' + token,
-      },
-      body: JSON.stringify({ name: 'puttest' })
-    })
-      .then(res => {
-        assert.strictEqual(res.status, 200)
-        return res.json()
+        'Authorization': 'Bearer ' + token
       })
-      .then(res => {
-        assert.strictEqual(res.message, 'Edit the subject successfully!')
+      .send({
+        name: 'puttest',
       })
+      .expect(200)
+
+    expect(res.body.message).to.be.equal('Edit the subject successfully!')
   })
 
   it('GET /api/admin/subjects/:id', async () => {
-    await fetch(`${HOST}:${INTERNAL_PORT}/api/admin/subjects/${1}`, {
-      method: 'GET',
-      headers: {
+    const res = await request(app)
+      .get(`/api/admin/subjects/${1}`)
+      .set({
         'Content-Type': 'application/json',
-        'Authorization': 'Bearer ' + token,
-      }
-    })
-      .then(res => {
-        assert.strictEqual(res.status, 200)
-        return res.json()
-      }).then(res => {
-        assert.strictEqual(res.subject.name, 'puttest')
+        'Authorization': 'Bearer ' + token
       })
+      .expect(200)
+
+    expect(res.body.subject.name).to.be.equal('puttest')
   })
 
   it('DELETE /api/admin/subjects/:id', async () => {
-    await fetch(`${HOST}:${INTERNAL_PORT}/api/admin/subjects/${1}`, {
-      method: 'DELETE',
-      headers: {
+    const res = await request(app)
+      .delete(`/api/admin/subjects/${1}`)
+      .set({
         'Content-Type': 'application/json',
-        'Authorization': 'Bearer ' + token,
-      },
-    })
-      .then(res => {
-        assert.strictEqual(res.status, 200)
-        return res.json()
+        'Authorization': 'Bearer ' + token
       })
-      .then(res => {
-        assert.strictEqual(res.message, 'Remove the subject successfully!')
-      })
+      .expect(200)
+
+    expect(res.body.message).to.be.equal('Remove the subject successfully!')
   })
 
   after(async () => {

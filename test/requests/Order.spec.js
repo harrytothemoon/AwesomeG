@@ -1,10 +1,10 @@
-const assert = require('assert')
 const bcrypt = require('bcryptjs')
-const fetch = require('node-fetch')
-const HOST = process.env.HOST || 'http://localhost'
-const INTERNAL_PORT = 3000
+const request = require('supertest')
 const db = require('../../models')
 const { Order, User, Product } = db
+const { expect } = require('chai')
+
+const app = require('../../app')
 
 describe('# Order Request', () => {
   let token = ''     // for saving sign in token
@@ -37,69 +37,59 @@ describe('# Order Request', () => {
       price: testProduct.price,
       name: testProduct.name
     })
-    // sign in as test user   
-    await fetch(`${HOST}:${INTERNAL_PORT}/api/signin`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
+    // sign in as test user  
+    const res = await request(app)
+      .post('/api/signin')
+      .set({
+        'Content-Type': 'application/json',
+      })
+      .send({
         email: testStudent.email,
         password: testStudent.password
       })
-    })
-      .then(res => res.json())
-      .then(res => {
-        token = res.token
-      })
+      .expect(200)
+    token = res.body.token
   })
 
   it('POST /api/student/order', async () => {
-    await fetch(`${HOST}:${INTERNAL_PORT}/api/student/order`, {
-      method: 'POST',
-      headers: {
+    const res = await request(app)
+      .post('/api/student/order')
+      .set({
         'Content-Type': 'application/json',
-        'Authorization': 'Bearer ' + token,
-      },
-      body: JSON.stringify({ productId: 1, payment_status: 0, amount: testProduct.price })
-    })
-      .then(res => {
-        assert.strictEqual(res.status, 200)
-        return res.json()
+        'Authorization': 'Bearer ' + token
       })
-      .then(res => {
-        assert.strictEqual(res.message, 'Place an order successfully!')
+      .send({
+        productId: 1,
+        payment_status: 0,
+        amount: testProduct.price
       })
+      .expect(200)
+
+    expect(res.body.message).to.be.equal('Place an order successfully!')
   })
 
   it('GET /api/student/orders', async () => {
-    await fetch(`${HOST}:${INTERNAL_PORT}/api/student/orders`, {
-      method: 'GET',
-      headers: {
+    const res = await request(app)
+      .get('/api/student/orders')
+      .set({
         'Content-Type': 'application/json',
-        'Authorization': 'Bearer ' + token,
-      }
-    })
-      .then(res => {
-        assert.strictEqual(res.status, 200)
-        return res.json()
-      }).then(res => {
-        assert.strictEqual(res.orders[0].UserId, 1)
+        'Authorization': 'Bearer ' + token
       })
+      .expect(200)
+
+    expect(res.body.orders[0].UserId).to.be.equal(1)
   })
 
   it('GET /api/student/order/:id/payment', async () => {
-    await fetch(`${HOST}:${INTERNAL_PORT}/api/student/order/${1}/payment`, {
-      method: 'GET',
-      headers: {
+    const res = await request(app)
+      .get(`/api/student/order/${1}/payment`)
+      .set({
         'Content-Type': 'application/json',
-        'Authorization': 'Bearer ' + token,
-      }
-    })
-      .then(res => {
-        assert.strictEqual(res.status, 200)
-        return res.json()
-      }).then(res => {
-        assert.strictEqual(res.order.amount, testProduct.price)
+        'Authorization': 'Bearer ' + token
       })
+      .expect(200)
+
+    expect(res.body.order.amount).to.be.equal(testProduct.price)
   })
 
   after(async () => {

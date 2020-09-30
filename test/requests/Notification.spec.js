@@ -1,10 +1,10 @@
-const assert = require('assert')
 const bcrypt = require('bcryptjs')
-const fetch = require('node-fetch')
-const HOST = process.env.HOST || 'http://localhost'
-const INTERNAL_PORT = 3000
+const request = require('supertest')
 const db = require('../../models')
 const { User, Notification } = db
+const { expect } = require('chai')
+
+const app = require('../../app')
 
 describe('# Notification Request', () => {
   let token = ''     // for saving sign in token
@@ -35,34 +35,29 @@ describe('# Notification Request', () => {
       UserId: testNotification.UserId,
     })
     // sign in as test user   
-    await fetch(`${HOST}:${INTERNAL_PORT}/api/signin`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
+    const res = await request(app)
+      .post('/api/signin')
+      .set({
+        'Content-Type': 'application/json',
+      })
+      .send({
         email: testStudent.email,
         password: testStudent.password
       })
-    })
-      .then(res => res.json())
-      .then(res => {
-        token = res.token
-      })
+      .expect(200)
+    token = res.body.token
   })
 
   it('GET /api/notifications', async () => {
-    await fetch(`${HOST}:${INTERNAL_PORT}/api/notifications`, {
-      method: 'GET',
-      headers: {
+    const res = await request(app)
+      .get('/api/notifications')
+      .set({
         'Content-Type': 'application/json',
-        'Authorization': 'Bearer ' + token,
-      }
-    })
-      .then(res => {
-        assert.strictEqual(res.status, 200)
-        return res.json()
-      }).then(res => {
-        assert.strictEqual(res.notifications[0].msg, 'test')
+        'Authorization': 'Bearer ' + token
       })
+      .expect(200)
+
+    expect(res.body.notifications[0].msg).to.be.equal('test')
   })
 
   after(async () => {
