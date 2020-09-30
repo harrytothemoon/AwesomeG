@@ -4,44 +4,35 @@ const fetch = require('node-fetch')
 const HOST = process.env.HOST || 'http://localhost'
 const INTERNAL_PORT = 3000
 const db = require('../../models')
-const { Answer, User, Question } = db
+const { User, Product } = db
 
 describe('# Answer Request', () => {
   let token = ''     // for saving sign in token
-  const testTeacher = {
+  const testAdmin = {
     name: 'test',
     email: 'test@example.com',
     password: 'test',
-    role: 'teacher'
-  }
-  const testQuestion = {
-    description: 'test',
-    UserId: '2',
+    role: 'admin'
   }
   before(async () => {
     await User.destroy({ where: {}, truncate: true })
-    await Answer.destroy({ where: {}, truncate: true })
-    await Question.destroy({ where: {}, truncate: true })
+    await Product.destroy({ where: {}, truncate: true })
     // create a test user
     const salt = await bcrypt.genSalt(10)
-    const hash = await bcrypt.hash(testTeacher.password, salt)
+    const hash = await bcrypt.hash(testAdmin.password, salt)
     await User.create({
-      name: testTeacher.name,
-      email: testTeacher.email,
+      name: testAdmin.name,
+      email: testAdmin.email,
       password: hash,
-      role: testTeacher.role
-    })
-    await Question.create({
-      description: testQuestion.description,
-      UserId: testQuestion.UserId,
+      role: testAdmin.role
     })
     // sign in as test user   
     await fetch(`${HOST}:${INTERNAL_PORT}/api/signin`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        email: testTeacher.email,
-        password: testTeacher.password
+        email: testAdmin.email,
+        password: testAdmin.password
       })
     })
       .then(res => res.json())
@@ -50,44 +41,26 @@ describe('# Answer Request', () => {
       })
   })
 
-  it('POST /api/teacher/answer', async () => {
-    await fetch(`${HOST}:${INTERNAL_PORT}/api/teacher/answer`, {
+  it('POST /api//admin/products', async () => {
+    await fetch(`${HOST}:${INTERNAL_PORT}/api//admin/products`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
         'Authorization': 'Bearer ' + token,
       },
-      body: JSON.stringify({ questionId: 1 })
+      body: JSON.stringify({ name: 'test', description: 'test', price: 123 })
     })
       .then(res => {
         assert.strictEqual(res.status, 200)
         return res.json()
       })
       .then(res => {
-        assert.strictEqual(res.message, 'Get the Question!')
+        assert.strictEqual(res.message, 'Place an product successfully!')
       })
   })
 
-  it('PUT /api/teacher/answer', async () => {
-    await fetch(`${HOST}:${INTERNAL_PORT}/api/teacher/answer`, {
-      method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer ' + token,
-      },
-      body: JSON.stringify({ questionId: 1, answer: 'test' })
-    })
-      .then(res => {
-        assert.strictEqual(res.status, 200)
-        return res.json()
-      })
-      .then(res => {
-        assert.strictEqual(res.message, 'The answer has been sent!')
-      })
-  })
-
-  it('GET /api/teacher/answers', async () => {
-    await fetch(`${HOST}:${INTERNAL_PORT}/api/teacher/answers`, {
+  it('GET /api/products', async () => {
+    await fetch(`${HOST}:${INTERNAL_PORT}/api/products`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
@@ -98,14 +71,47 @@ describe('# Answer Request', () => {
         assert.strictEqual(res.status, 200)
         return res.json()
       }).then(res => {
-        assert.strictEqual(res.answers[0].UserId, 1)
+        assert.strictEqual(res.products[0].name, 'test')
+      })
+  })
+
+  it('PUT /api/admin/products/:id', async () => {
+    await fetch(`${HOST}:${INTERNAL_PORT}/api/admin/products/${1}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + token,
+      },
+      body: JSON.stringify({ name: 'puttest', description: 'puttest', price: 456 })
+    })
+      .then(res => {
+        assert.strictEqual(res.status, 200)
+        return res.json()
+      })
+      .then(res => {
+        assert.strictEqual(res.message, 'Edit an product successfully!')
+      })
+  })
+
+  it('GET /api/admin/products/:id', async () => {
+    await fetch(`${HOST}:${INTERNAL_PORT}/api/admin/products/${1}`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + token,
+      }
+    })
+      .then(res => {
+        assert.strictEqual(res.status, 200)
+        return res.json()
+      }).then(res => {
+        assert.strictEqual(res.product.name, 'puttest')
       })
   })
 
   after(async () => {
     // remove the test user
     await User.destroy({ where: {}, truncate: true })
-    await Answer.destroy({ where: {}, truncate: true })
-    await Question.destroy({ where: {}, truncate: true })
+    await Product.destroy({ where: {}, truncate: true })
   })
 })

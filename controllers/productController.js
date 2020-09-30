@@ -19,7 +19,7 @@ const productController = {
   },
   postProduct: (req, res) => {
     if (!req.body.name || !req.body.description || !req.body.price) {
-      return res.json({ status: 'error', message: "不能有空白欄位！" })
+      return res.json({ status: 'error', message: "required fields didn't exist" })
     } else {
       return Product.create({
         name: req.body.name,
@@ -27,19 +27,19 @@ const productController = {
         price: req.body.price,
       })
         .then((product) => {
-          return res.json({ status: 'success', message: '成功新增product!' })
+          return res.json({ status: 'success', message: 'Place an product successfully!' })
         }).catch(error => console.log(error))
     }
   },
   putProduct: (req, res) => {
     if (!req.body.name || !req.body.description || !req.body.price) {
-      return res.json({ status: 'error', message: "不能有空白欄位！" })
+      return res.json({ status: 'error', message: "required fields didn't exist" })
     } else {
       return Product.findByPk(req.params.id)
         .then((product) => {
           product.update(req.body)
             .then((product) => {
-              return res.json({ status: 'success', message: '成功修改product!' })
+              return res.json({ status: 'success', message: 'Edit an product successfully!' })
             }).catch(error => console.log(error))
         }).catch(error => console.log(error))
     }
@@ -49,7 +49,7 @@ const productController = {
       .then((product) => {
         product.destroy()
           .then((product) => {
-            return res.json({ status: 'success', message: '成功刪除product!' })
+            return res.json({ status: 'success', message: 'Remove an product successfully!' })
           }).catch(error => console.log(error))
       }).catch(error => console.log(error))
   }

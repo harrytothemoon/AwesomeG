@@ -6,7 +6,7 @@ const INTERNAL_PORT = 3000
 const db = require('../../models')
 const { User, Notification } = db
 
-describe('# Notification request', () => {
+describe('# Notification Request', () => {
   let token = ''     // for saving sign in token
   const testStudent = {
     name: 'test',

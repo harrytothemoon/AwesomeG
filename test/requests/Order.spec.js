@@ -6,7 +6,7 @@ const INTERNAL_PORT = 3000
 const db = require('../../models')
 const { Order, User, Product } = db
 
-describe('# Order request', () => {
+describe('# Order Request', () => {
   let token = ''     // for saving sign in token
   const testStudent = {
     name: 'test',
@@ -103,7 +103,7 @@ describe('# Order request', () => {
   })
 
   after(async () => {
-    // remove the test user and url
+    // remove the test
     await User.destroy({ where: {}, truncate: true })
     await Order.destroy({ where: {}, truncate: true })
     await Product.destroy({ where: {}, truncate: true })
