@@ -9,7 +9,7 @@ const userController = {
   signIn: (req, res) => {
     // 檢查必要資料
     if (!req.body.email || !req.body.password) {
-      return res.json({ status: 'error', message: "required fields didn't exist" })
+      return res.status(400).json({ status: 'error', message: "required fields didn't exist" })
     }
     // 檢查 user 是否存在與密碼是否正確
     let username = req.body.email
@@ -34,6 +34,9 @@ const userController = {
     }).catch(error => console.log(error))
   },
   signUp: (req, res) => {
+    if (!req.body.role || !req.body.name || !req.body.password || !req.body.passwordCheck || !req.body.email) {
+      return res.status(400).json({ status: 'error', message: "required fields didn't exist" })
+    }
     // confirm password
     if (req.body.passwordCheck !== req.body.password) {
       return res.json({ status: 'warning', message: 'Password settings are not consistent.' })
@@ -84,7 +87,7 @@ const userController = {
         return res.json({ user })
       }).catch(error => console.log(error))
     } else {
-      return res.json({
+      return res.status(401).json({
         status: 'error', message: "Permission denied"
       })
     }
@@ -182,7 +185,7 @@ const userController = {
         }
       }
     } else {
-      return res.json({ status: 'error', message: "Unauthority!" })
+      return res.status(401).json({ status: 'error', message: "Unauthority!" })
     }
   },
   getCurrentUser: (req, res) => {

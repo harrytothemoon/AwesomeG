@@ -6,7 +6,7 @@ const INTERNAL_PORT = 3000
 const db = require('../../models')
 const { User, Question } = db
 
-describe('# Answer Request', () => {
+describe('# Question Request', () => {
   let token = ''     // for saving sign in token
   const testAdmin = {
     name: 'test',

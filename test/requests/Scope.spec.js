@@ -6,7 +6,7 @@ const INTERNAL_PORT = 3000
 const db = require('../../models')
 const { User, Scope } = db
 
-describe('# Answer Request', () => {
+describe('# Scope Request', () => {
   let token = ''     // for saving sign in token
   const testAdmin = {
     name: 'test',
@@ -41,8 +41,8 @@ describe('# Answer Request', () => {
       })
   })
 
-  it('POST /api//admin/scopes', async () => {
-    await fetch(`${HOST}:${INTERNAL_PORT}/api//admin/scopes`, {
+  it('POST /api/admin/scopes', async () => {
+    await fetch(`${HOST}:${INTERNAL_PORT}/api/admin/scopes`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
