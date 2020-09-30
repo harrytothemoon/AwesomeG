@@ -3,6 +3,7 @@ const request = require('supertest')
 const db = require('../../models')
 const { Answer, User, Question } = db
 const { expect } = require('chai')
+const path = require("path")
 
 const app = require('../../app')
 
@@ -63,39 +64,55 @@ describe('# Answer Request', () => {
 
     expect(res.body.message).to.be.equal('Get the Question!')
   })
+  context('# PUT /api/teacher/answer', () => {
+    it('put without image', async function () {
+      const res = await request(app)
+        .put('/api/teacher/answer')
+        .set({
+          'Content-Type': 'multipart/form-data',
+          'Authorization': 'Bearer ' + token
+        })
+        .field('questionId', 1)
+        .field('answer', 'test')
+        .expect(200)
 
-  it('PUT /api/teacher/answer', async () => {
-    const res = await request(app)
-      .put('/api/teacher/answer')
-      .set({
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer ' + token
-      })
-      .send({
-        questionId: 1,
-        answer: 'test'
-      })
-      .expect(200)
+      expect(res.body.message).to.be.equal('The answer has been sent!')
+    })
+    it('put with image', async function () {
+      this.timeout(10000)
+      const res = await request(app)
+        .put('/api/teacher/answer')
+        .set({
+          'Content-Type': 'multipart/form-data',
+          'Authorization': 'Bearer ' + token
+        })
+        .field('questionId', 1)
+        .field('answer', 'test')
+        .attach('image', path.resolve(__dirname, "../../public/images.jpeg"))
+        .expect(200)
 
-    expect(res.body.message).to.be.equal('The answer has been sent!')
+      expect(res.body.message).to.be.equal('The answer has been sent!')
+    })
   })
 
-  it('GET /api/teacher/answers', async () => {
-    const res = await request(app)
-      .get('/api/teacher/answers')
-      .set({
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer ' + token
-      })
-      .expect(200)
+  context('# GET /api/teacher/answers', () => {
+    it('get teacher answers successfully', async () => {
+      const res = await request(app)
+        .get('/api/teacher/answers')
+        .set({
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer ' + token
+        })
+        .expect(200)
 
-    expect(res.body.answers[0].UserId).to.be.equal(1)
+      expect(res.body.answers[0].UserId).to.be.equal(1)
+    })
   })
 
-  after(async () => {
-    // remove the test user
-    await User.destroy({ where: {}, truncate: true })
-    await Answer.destroy({ where: {}, truncate: true })
-    await Question.destroy({ where: {}, truncate: true })
-  })
+  // after(async () => {
+  //   // remove the test user
+  //   await User.destroy({ where: {}, truncate: true })
+  //   await Answer.destroy({ where: {}, truncate: true })
+  //   await Question.destroy({ where: {}, truncate: true })
+  // })
 })

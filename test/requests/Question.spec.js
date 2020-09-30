@@ -3,6 +3,7 @@ const request = require('supertest')
 const db = require('../../models')
 const { User, Question } = db
 const { expect } = require('chai')
+const path = require("path")
 
 const app = require('../../app')
 
@@ -13,7 +14,7 @@ describe('# Question Request', () => {
     email: 'test@example.com',
     password: 'test',
     role: 'admin',
-    quantity: 1
+    quantity: 2
   }
   before(async () => {
     await User.destroy({ where: {}, truncate: true })
@@ -42,7 +43,7 @@ describe('# Question Request', () => {
     token = res.body.token
   })
   context('# POST /api/student/questions', () => {
-    it('Post the question with enough quantity', async () => {
+    it('Post the question without image and with enough quantity', async () => {
       const res = await request(app)
         .post('/api/student/questions')
         .set({
@@ -59,6 +60,25 @@ describe('# Question Request', () => {
 
       expect(res.body.message).to.be.equal('Post the question successfully!')
     })
+
+    it('Post the question with image and with enough quantity', async function () {
+      this.timeout(10000)
+      const res = await request(app)
+        .post('/api/student/questions')
+        .set({
+          'Content-Type': 'multipart/form-data',
+          'Authorization': 'Bearer ' + token
+        })
+        .field('subjectId', 1)
+        .field('scopeId', 1)
+        .field('StatusId', 1)
+        .field('description', 'test')
+        .attach('image', path.resolve(__dirname, "../../public/images.jpeg"))
+        .expect(200)
+
+      expect(res.body.message).to.be.equal('Post the question successfully!')
+    })
+
     it('Post the question without enough quantity', async () => {
       const res = await request(app)
         .post('/api/student/questions')

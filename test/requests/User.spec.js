@@ -2,6 +2,7 @@ const request = require('supertest')
 const db = require('../../models')
 const { User } = db
 const { expect } = require('chai')
+const path = require("path")
 
 const app = require('../../app')
 
@@ -209,6 +210,22 @@ describe('# User Request', () => {
 
       expect(res.body.message).to.be.equal('Update Successfully!')
     })
+    it('put user with password setting and with avatar successfully', async function () {
+      this.timeout(10000)
+      const res = await request(app)
+        .put(`/api/users/${1}`)
+        .set({
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer ' + token
+        })
+        .field('name', 'puttest')
+        .field('password', 'puttest')
+        .field('passwordCheck', 'puttest')
+        .attach('avatar', path.resolve(__dirname, "../../public/images.jpeg"))
+        .expect(200)
+
+      expect(res.body.message).to.be.equal('Update Successfully!')
+    })
     it('put user without password setting successfully', async () => {
       const res = await request(app)
         .put(`/api/users/${1}`)
@@ -219,6 +236,20 @@ describe('# User Request', () => {
         .send({
           name: 'puttest',
         })
+        .expect(200)
+
+      expect(res.body.message).to.be.equal('Update Successfully!')
+    })
+    it('put user without password setting and with avatar successfully', async function () {
+      this.timeout(10000)
+      const res = await request(app)
+        .put(`/api/users/${1}`)
+        .set({
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer ' + token
+        })
+        .field('name', 'puttest')
+        .attach('avatar', path.resolve(__dirname, "../../public/images.jpeg"))
         .expect(200)
 
       expect(res.body.message).to.be.equal('Update Successfully!')
