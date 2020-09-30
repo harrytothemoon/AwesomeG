@@ -12,7 +12,8 @@ describe('# Question Request', () => {
     name: 'test',
     email: 'test@example.com',
     password: 'test',
-    role: 'admin'
+    role: 'admin',
+    quantity: 1
   }
   before(async () => {
     await User.destroy({ where: {}, truncate: true })
@@ -25,7 +26,7 @@ describe('# Question Request', () => {
       email: testAdmin.email,
       password: hash,
       role: testAdmin.role,
-      quantity: 1
+      quantity: testAdmin.quantity
     })
     // sign in as test user   
     await fetch(`${HOST}:${INTERNAL_PORT}/api/signin`, {
@@ -41,55 +42,77 @@ describe('# Question Request', () => {
         token = res.token
       })
   })
-
-  it('POST /api/student/questions', async () => {
-    await fetch(`${HOST}:${INTERNAL_PORT}/api/student/questions`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer ' + token,
-      },
-      body: JSON.stringify({ description: 'test', subjectId: 1, scopeId: 1 })
+  context('# POST /api/student/questions', () => {
+    it('Post the question with enough quantity', async () => {
+      await fetch(`${HOST}:${INTERNAL_PORT}/api/student/questions`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer ' + token,
+        },
+        body: JSON.stringify({ description: 'test', subjectId: 1, scopeId: 1, StatusId: 1 })
+      })
+        .then(res => {
+          assert.strictEqual(res.status, 200)
+          return res.json()
+        })
+        .then(res => {
+          assert.strictEqual(res.message, 'Post the question successfully!')
+        })
     })
-      .then(res => {
-        assert.strictEqual(res.status, 200)
-        return res.json()
+    it('Post the question without enough quantity', async () => {
+      await fetch(`${HOST}:${INTERNAL_PORT}/api/student/questions`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer ' + token,
+        },
+        body: JSON.stringify({ description: 'test2', subjectId: 2, scopeId: 2, StatusId: 1 })
       })
-      .then(res => {
-        assert.strictEqual(res.message, 'Post the question successfully!')
-      })
+        .then(res => {
+          assert.strictEqual(res.status, 200)
+          return res.json()
+        })
+        .then(res => {
+          assert.strictEqual(res.message, 'Insufficient balance, please recharge!')
+        })
+    })
   })
 
-  it('GET /api/student/questions', async () => {
-    await fetch(`${HOST}:${INTERNAL_PORT}/api/student/questions`, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer ' + token,
-      }
-    })
-      .then(res => {
-        assert.strictEqual(res.status, 200)
-        return res.json()
-      }).then(res => {
-        assert.strictEqual(res.questions[0].description, 'test')
+  context('# GET /api/student/questions', () => {
+    it('get student questions successfully', async () => {
+      await fetch(`${HOST}:${INTERNAL_PORT}/api/student/questions`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer ' + token,
+        }
       })
+        .then(res => {
+          assert.strictEqual(res.status, 200)
+          return res.json()
+        }).then(res => {
+          assert.strictEqual(res.questions[0].description, 'test')
+        })
+    })
   })
 
-  it('GET /api/teacher/questions', async () => {
-    await fetch(`${HOST}:${INTERNAL_PORT}/api/teacher/questions`, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer ' + token,
-      }
-    })
-      .then(res => {
-        assert.strictEqual(res.status, 200)
-        return res.json()
-      }).then(res => {
-        assert.strictEqual(res.questions[0].description, 'test')
+  context('# GET /api/teacher/questions', () => {
+    it('get teacher questions successfully', async () => {
+      await fetch(`${HOST}:${INTERNAL_PORT}/api/teacher/questions`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer ' + token,
+        }
       })
+        .then(res => {
+          assert.strictEqual(res.status, 200)
+          return res.json()
+        }).then(res => {
+          assert.strictEqual(res.questions[0].description, 'test')
+        })
+    })
   })
   after(async () => {
     // remove the test user
