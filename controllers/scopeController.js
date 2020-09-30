@@ -25,7 +25,7 @@ const scopeController = {
         name: req.body.name
       })
         .then((scope) => {
-          return res.json({ status: 'success', message: '成功新增scope!' })
+          return res.json({ status: 'success', message: 'Create the scope successfully!' })
         }).catch(error => console.log(error))
     }
   },
@@ -37,7 +37,7 @@ const scopeController = {
         .then((scope) => {
           scope.update(req.body)
             .then((scope) => {
-              return res.json({ status: 'success', message: '成功修改scope!' })
+              return res.json({ status: 'success', message: 'Edit the scope successfully!' })
             }).catch(error => console.log(error))
         }).catch(error => console.log(error))
     }
@@ -47,7 +47,7 @@ const scopeController = {
       .then((scope) => {
         scope.destroy()
           .then((scope) => {
-            return res.json({ status: 'success', message: '成功刪除scope!' })
+            return res.json({ status: 'success', message: 'Remove the scope successfully!' })
           })
       }).catch(error => console.log(error))
   }

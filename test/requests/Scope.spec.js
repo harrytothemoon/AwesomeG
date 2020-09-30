@@ -4,7 +4,7 @@ const fetch = require('node-fetch')
 const HOST = process.env.HOST || 'http://localhost'
 const INTERNAL_PORT = 3000
 const db = require('../../models')
-const { User, Product } = db
+const { User, Scope } = db
 
 describe('# Answer Request', () => {
   let token = ''     // for saving sign in token
@@ -16,7 +16,7 @@ describe('# Answer Request', () => {
   }
   before(async () => {
     await User.destroy({ where: {}, truncate: true })
-    await Product.destroy({ where: {}, truncate: true })
+    await Scope.destroy({ where: {}, truncate: true })
     // create a test user
     const salt = await bcrypt.genSalt(10)
     const hash = await bcrypt.hash(testAdmin.password, salt)
@@ -41,26 +41,26 @@ describe('# Answer Request', () => {
       })
   })
 
-  it('POST /api//admin/products', async () => {
-    await fetch(`${HOST}:${INTERNAL_PORT}/api//admin/products`, {
+  it('POST /api//admin/scopes', async () => {
+    await fetch(`${HOST}:${INTERNAL_PORT}/api//admin/scopes`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
         'Authorization': 'Bearer ' + token,
       },
-      body: JSON.stringify({ name: 'test', description: 'test', price: 123 })
+      body: JSON.stringify({ name: 'test' })
     })
       .then(res => {
         assert.strictEqual(res.status, 200)
         return res.json()
       })
       .then(res => {
-        assert.strictEqual(res.message, 'Place the product successfully!')
+        assert.strictEqual(res.message, 'Create the scope successfully!')
       })
   })
 
-  it('GET /api/products', async () => {
-    await fetch(`${HOST}:${INTERNAL_PORT}/api/products`, {
+  it('GET /api/scopes', async () => {
+    await fetch(`${HOST}:${INTERNAL_PORT}/api/scopes`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
@@ -71,30 +71,30 @@ describe('# Answer Request', () => {
         assert.strictEqual(res.status, 200)
         return res.json()
       }).then(res => {
-        assert.strictEqual(res.products[0].name, 'test')
+        assert.strictEqual(res.scopes[0].name, 'test')
       })
   })
 
-  it('PUT /api/admin/products/:id', async () => {
-    await fetch(`${HOST}:${INTERNAL_PORT}/api/admin/products/${1}`, {
+  it('PUT /api/admin/scopes/:id', async () => {
+    await fetch(`${HOST}:${INTERNAL_PORT}/api/admin/scopes/${1}`, {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',
         'Authorization': 'Bearer ' + token,
       },
-      body: JSON.stringify({ name: 'puttest', description: 'puttest', price: 456 })
+      body: JSON.stringify({ name: 'puttest' })
     })
       .then(res => {
         assert.strictEqual(res.status, 200)
         return res.json()
       })
       .then(res => {
-        assert.strictEqual(res.message, 'Edit the product successfully!')
+        assert.strictEqual(res.message, 'Edit the scope successfully!')
       })
   })
 
-  it('GET /api/admin/products/:id', async () => {
-    await fetch(`${HOST}:${INTERNAL_PORT}/api/admin/products/${1}`, {
+  it('GET /api/admin/scopes/:id', async () => {
+    await fetch(`${HOST}:${INTERNAL_PORT}/api/admin/scopes/${1}`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
@@ -105,12 +105,12 @@ describe('# Answer Request', () => {
         assert.strictEqual(res.status, 200)
         return res.json()
       }).then(res => {
-        assert.strictEqual(res.product.name, 'puttest')
+        assert.strictEqual(res.scope.name, 'puttest')
       })
   })
 
-  it('DELETE /api/admin/products/:id', async () => {
-    await fetch(`${HOST}:${INTERNAL_PORT}/api/admin/products/${1}`, {
+  it('DELETE /api/admin/scopes/:id', async () => {
+    await fetch(`${HOST}:${INTERNAL_PORT}/api/admin/scopes/${1}`, {
       method: 'DELETE',
       headers: {
         'Content-Type': 'application/json',
@@ -122,13 +122,13 @@ describe('# Answer Request', () => {
         return res.json()
       })
       .then(res => {
-        assert.strictEqual(res.message, 'Remove the product successfully!')
+        assert.strictEqual(res.message, 'Remove the scope successfully!')
       })
   })
 
   after(async () => {
     // remove the test user
     await User.destroy({ where: {}, truncate: true })
-    await Product.destroy({ where: {}, truncate: true })
+    await Scope.destroy({ where: {}, truncate: true })
   })
 })

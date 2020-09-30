@@ -27,7 +27,7 @@ const productController = {
         price: req.body.price,
       })
         .then((product) => {
-          return res.json({ status: 'success', message: 'Place an product successfully!' })
+          return res.json({ status: 'success', message: 'Place the product successfully!' })
         }).catch(error => console.log(error))
     }
   },
@@ -39,7 +39,7 @@ const productController = {
         .then((product) => {
           product.update(req.body)
             .then((product) => {
-              return res.json({ status: 'success', message: 'Edit an product successfully!' })
+              return res.json({ status: 'success', message: 'Edit the product successfully!' })
             }).catch(error => console.log(error))
         }).catch(error => console.log(error))
     }
@@ -49,7 +49,7 @@ const productController = {
       .then((product) => {
         product.destroy()
           .then((product) => {
-            return res.json({ status: 'success', message: 'Remove an product successfully!' })
+            return res.json({ status: 'success', message: 'Remove the product successfully!' })
           }).catch(error => console.log(error))
       }).catch(error => console.log(error))
   }
