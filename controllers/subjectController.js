@@ -25,7 +25,7 @@ const subjectController = {
         name: req.body.name
       })
         .then((subject) => {
-          return res.json({ status: 'success', message: '成功新增subject!' })
+          return res.json({ status: 'success', message: 'Create the subject successfully!' })
         }).catch(error => console.log(error))
     }
   },
@@ -37,7 +37,7 @@ const subjectController = {
         .then((subject) => {
           subject.update(req.body)
             .then((subject) => {
-              return res.json({ status: 'success', message: '成功修改subject!' })
+              return res.json({ status: 'success', message: 'Edit the subject successfully!' })
             }).catch(error => console.log(error))
         }).catch(error => console.log(error))
     }
@@ -47,7 +47,7 @@ const subjectController = {
       .then((subject) => {
         subject.destroy()
           .then((subject) => {
-            return res.json({ status: 'success', message: '成功刪除subject!' })
+            return res.json({ status: 'success', message: 'Remove the subject successfully!' })
           }).catch(error => console.log(error))
       }).catch(error => console.log(error))
   },
