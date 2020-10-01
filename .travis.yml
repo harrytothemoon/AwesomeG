@@ -1,6 +1,6 @@
 language: node_js
 node_js:
-  - "12"
+  - "10"
 services:
   - mysql
 env:
@@ -15,7 +15,7 @@ before_script:
 deploy:
   provider: heroku
   api_key:
-    secure: dqd4NHRQ0p0l+JnnAP4/avXRijr263c3OfJZ/my8n5cBvukGJExUd5YVvWKA4p8CkoRUVmPrd6EOhCgkUjEtOOrmh0EqVyk5aPOzAKCOcc5/Pu0HeaUtCsLchLm26IDyeZMJMTnp1nr9wzDYl2YYqQq4gQewd2dwdjapigt1rB7M0yZop6DxYImVq06PGi+4EnNc9f6QF7Q6xpzKMOGowAEO9uxd6RDdVLZeaanUT2I/0yjQAqylQ6ElvqumuRgJidO70Hb6tpsBzyPP+J6zP13JYg/i+eOLz89ZnRzm6n+Xd3nC40AZx2Fmy8wq8LYLpJBdAAH4zew+IoL7oKtbq3mfTLcGphBlR8Huj0sRefAxzKEdkQL0qeGsRT/MeXu7aPkH/Sk2tbzM5cZ+VZA/i7wiwYO/5MOuh+VoWb8WG+/0Nqa+ZbvSybng/+phv9yKyBkEbREawEKS+7uHkETrZfv1b2yYk0tUSuJwXO/vlLNKUYkDAO/A+a/SYCj5zxJ5cY2/xE+uhfONMDjijsbe23y6MjAVGXA31l0GoLYWtuVrPmLsNYNKDCDVhXKIRK1hN9PMNXKLvygosGgcYDUqoZSW8H11vVF4uBx61RReTx7+4oNH3VU/hV8RNjdA0mwFt0VcrspLEgebGeZUE9/sT6tMznvagbAjIomlfd6/qTw=
+    secure: Osyvtr56wynTv6P7q3ocffvoDY1/f8UDbl3EiRyLYYbVZKt1QkW2wexNGJ4KigHBvfIZZQtALuU/06u5PTiTW4cW3gOItFUz6bNuuRX1wDJuPdk54vrhPDxbJoA8aDx3qdwT6iipt8mq7GPC3B7eD/T0zOAklhGFmJGQ0sQE0hs0NW//EKVfLK7AqHv/gslxrDFaaikjeAP3iqmx9OrAz1uvRC5Hsu6dJ5FyuvrxT3RZkzjaddqno4vqOrnc9cgF7pu9zUET//0MbV37umKVEhLZI9l8U83e4s4yrGQRjkUsPOieDqQX6s+5t45wD6W9+bMctk6A6pD21zcm1DCxhkL5xW3n9UosMIPDRB1UUG9NpmzD0f0Gw1ZgsKmFIB5ZIRR9DCTxewYC3kWIpcSCDFo3p9uKi5YSmxatgn9NwyseK8iT18GPmsIfEx4axgEUHYOJ1ba3ElzER0QB0wWQC10VK0fYtFpCC7Jxe6F+k7wwYSzdsLX+bnlpfRDDdA832ksbhbaiFJHix46PLm1HHdUfkpECBlx6UyPgflZvtCifObWcubuaFzZPjf/tEhoJSR9aBRHHuGJ8q6in1EZCEk60Utk1qqjfFIazzDj0Fx6yE+XIUlgocHpv5zAadevIE+f9FehJm+9XP8Cwrv9A0SqOVPG+WTLBtFmuTUoU2bI=
   app: young-hollows-22995
   on:
     repo: harry811016/AwesomeG
