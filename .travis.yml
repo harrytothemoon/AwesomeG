@@ -15,11 +15,11 @@ before_install:
   - export JWT_SECRET=alphacamp
 # 在執行測試之前的指令
 before_script:
-  - sequelize db:migrate
+  - npx sequelize db:migrate
 deploy:
   provider: heroku
   api_key:
-    secure: ab134b9b-1658-4da6-938d-c573d19d8b34
+    secure: process.env.HEROKU_API_KEY
   app: young-hollows-22995
   on:
     repo: harry811016/AwesomeG
