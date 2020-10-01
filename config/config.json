@@ -8,7 +8,7 @@
   },
   "test": {
     "username": "travis",
-    "database": "database_test",
+    "database": "awesomeG",
     "host": "127.0.0.1",
     "dialect": "mysql"
   },
