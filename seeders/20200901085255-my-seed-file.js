@@ -50,7 +50,6 @@ module.exports = {
       ['Math', 'Physical', 'Chemical']
         .map((item, index) =>
           ({
-            id: index + 1,
             name: item,
             createdAt: new Date(),
             updatedAt: new Date()
@@ -60,7 +59,6 @@ module.exports = {
       ['primary school 1st', 'primary school 2nd', 'primary school 3rd', 'primary school 4th', 'primary school 5th', 'primary school 6th', 'middle school 1st', 'middle school 2nd', 'middle school 3rd', 'high school 1st', 'high school 2nd', 'high school 3rd', 'university or others']
         .map((item, index) =>
           ({
-            id: index + 1,
             name: item,
             createdAt: new Date(),
             updatedAt: new Date()
@@ -82,7 +80,6 @@ module.exports = {
       [['Easy Learning', 20, 990], ['Become a master', 66, 2990]]
         .map((item, index) =>
           ({
-            id: index + 1,
             name: item[0],
             description: item[1],
             price: item[2],
