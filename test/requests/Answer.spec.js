@@ -109,10 +109,10 @@ describe('# Answer Request', () => {
     })
   })
 
-  // after(async () => {
-  //   // remove the test user
-  //   await User.destroy({ where: {}, truncate: true })
-  //   await Answer.destroy({ where: {}, truncate: true })
-  //   await Question.destroy({ where: {}, truncate: true })
-  // })
+  after(async () => {
+    // remove the test user
+    await User.destroy({ where: {}, truncate: true })
+    await Answer.destroy({ where: {}, truncate: true })
+    await Question.destroy({ where: {}, truncate: true })
+  })
 })
