@@ -1,8 +1,31 @@
-# Awesome G Project
+# Awesome G Project (後端專案)
 
 [GitHub Page - Awesome G](https://harry811016.github.io/AwesomeG_front/)
 
 [前端專案 GitHub](https://github.com/harry811016/AwesomeG_front)
+
+## 測試用使用者
+
+* 老師身份
+
+email: user0@example.com ~ user5@example.com (共6組)
+
+password: 1234
+
+* 學生身份
+
+email: user6@example.com ~ user11@example.com (共6組)
+
+password: 1234
+
+* 測試用信用卡
+
+信用卡號 4000-2211-1111-1111 
+
+到期日:都可以 
+
+隨機碼:都可以
+
 
 ## 專案setup
 ```
@@ -23,9 +46,20 @@ npm run dev
 #### 專案技術：
 
 前端：以Vue框架搭配Bootstrap實作
+
 後端：Ｎode.js + express
+
 資料庫：MySQL
+
 部署：前端(GitHub Page)、後端(Heroku)
+
+其他技術：
+
+socket.io / mocha test / nyc coverage / travis CI/CD(Heroku) / 藍新金流API / RWD / RestfulAPI
+
+#### Home Page
+
+![Webpicture](/public/Homepage.png)
 
 ## User Story
 
@@ -53,34 +87,11 @@ npm run dev
 * 瀏覽題目時可篩選題目科目
 * 可以於個人頁面瀏覽自己個人資訊及回答的題數
 
-#### In progress
+#### 2020/10/03 Update User Story
 
 * 後台管理，包含商品、類別和科目等的新增/瀏覽/修改/刪除功能
+* 使用者編輯個人資訊功能
 * 題目或解答時的即時通知
 * 點選圖片放大功能
-* 上傳檔案方式多元，如錄音/拍照等等
 * 瀏覽老師頁面篩選功能
 * 網站一些基本敘述頁面
-* 搜尋題目功能
-
-## 測試用使用者
-
-* 老師身份
-
-email: user0@example.com ~ user5@example.com (共6組)
-
-password: 1234
-
-* 學生身份
-
-email: user6@example.com ~ user11@example.com (共6組)
-
-password: 1234
-
-* 測試用信用卡
-
-信用卡號 4000-2211-1111-1111 
-
-到期日:都可以 
-
-隨機碼:都可以
