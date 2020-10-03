@@ -57,10 +57,6 @@ npm run dev
 
 socket.io / mocha test / nyc coverage / travis CI/CD(Heroku) / 藍新金流API / RWD / RestfulAPI
 
-#### Home Page
-
-![Webpicture](/public/Homepage.png)
-
 ## User Story
 
 #### Complete
