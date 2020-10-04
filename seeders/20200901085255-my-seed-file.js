@@ -1,6 +1,8 @@
 'use strict';
 const bcrypt = require('bcryptjs')
 const faker = require('faker')
+const question = ['https://i.pinimg.com/564x/ef/d2/cb/efd2cb7a8ded0c0d0c9e402bd29dac34.jpg', 'https://i.pinimg.com/originals/7b/25/b0/7b25b099ffe7e2804d13cb87821c7788.gif', 'https://i.pinimg.com/564x/a7/c2/94/a7c2942dbcf9fa79e5fa52e83798ec0d.jpg', 'https://i.pinimg.com/564x/84/7c/c6/847cc61684dbd837ff00d45a4c233128.jpg', 'https://i.pinimg.com/564x/63/08/2b/63082bd6e2a862bca8ed72835022bc7e.jpg']
+faker.locale = "en";
 
 module.exports = {
   up: async (queryInterface, Sequelize) => {
@@ -11,7 +13,7 @@ module.exports = {
       name: "root",
       createdAt: new Date(),
       updatedAt: new Date(),
-      avatar: `https://loremflickr.com/320/240/girl/?lock=${Math.random() * 100}`
+      avatar: faker.image.avatar()
     }], {})
 
     await queryInterface.bulkInsert('Users',
@@ -23,9 +25,9 @@ module.exports = {
           name: faker.name.findName(),
           createdAt: new Date(),
           updatedAt: new Date(),
-          introduction: faker.lorem.text(),
+          introduction: faker.hacker.phrase(),
           gender: ['Male', 'Female'][Math.floor(Math.random() * 2)],
-          avatar: `https://loremflickr.com/320/240/people/?lock=${Math.random() * 100}`,
+          avatar: faker.image.avatar(),
           bankaccount: faker.finance.account(12),
           expertise: ['Math', 'Chemical', 'Physical'][Math.floor(Math.random() * 3)],
         })
@@ -41,7 +43,7 @@ module.exports = {
           updatedAt: new Date(),
           gender: ['Male', 'Female'][Math.floor(Math.random() * 2)],
           quantity: 0,
-          avatar: `https://loremflickr.com/320/240/people/?lock=${Math.random() * 100}`,
+          avatar: faker.image.avatar(),
           grade: ['primary school 1st', 'primary school 2nd', 'primary school 3rd', 'primary school 4th', 'primary school 5th', 'primary school 6th', 'middle school 1st', 'middle school 2nd', 'middle school 3rd', 'high school 1st', 'high school 2nd', 'high school 3rd', 'university or others'][Math.floor(Math.random() * 13)]
         })
       ), {})
@@ -69,7 +71,6 @@ module.exports = {
       ['wait for a teacher ...', 'working on it !', 'done', 'complete']
         .map((item, index) =>
           ({
-            id: index + 1,
             name: item,
             createdAt: new Date(),
             updatedAt: new Date()
@@ -89,10 +90,10 @@ module.exports = {
         ), {})
 
     await queryInterface.bulkInsert('Questions',
-      Array.from({ length: 5 }).map(d =>
+      Array.from({ length: 5 }).map((d, i) =>
         ({
-          description: faker.lorem.text(),
-          image: `https://loremflickr.com/320/240/question/?lock=${Math.random() * 100}`,
+          description: faker.hacker.phrase(),
+          image: question[i],
           StatusId: 1,
           UserId: 8 + Math.floor(Math.random() * 6),
           SubjectId: 1 + Math.floor(Math.random() * 3),
