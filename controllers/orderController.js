@@ -59,7 +59,7 @@ const orderController = {
       const tradeInfo = helpers.getTradeInfo(
         order.toJSON().amount,
         `AwesomeG-${order.toJSON().Product.name}`,
-        process.env.ACCOUNT
+        req.user.email
       );
       order.update({
         sn: Number(tradeInfo.MerchantOrderNo),
