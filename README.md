@@ -1,6 +1,6 @@
 # Awesome G Project (後端專案)
 
-[GitHub Page - Awesome G](https://harry811016.github.io/AwesomeG_front/)
+[GitHub Page - Awesome G](https://harrytothemoon.github.io/AwesomeG_front/)
 
 [前端專案 GitHub](https://github.com/harry811016/AwesomeG_front)
 
